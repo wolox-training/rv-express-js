@@ -82,6 +82,22 @@ app.get('/albums', (req, res) => {
   });
 });
 
+// `app.get()` call:
+app.get('/albums/:id', (req, res) => {
+  console.log('----/albums----');
+  console.log(req.params.id);
+
+  // request(`${url}/albums`, (error, response, body) => {
+  //   // Print the error if one occurred
+  //   console.log('error:', error);
+
+  //   // Print the response status code if a response was received
+  //   console.log('statusCode:', response && response.statusCode);
+
+  //   res.send(body);
+  // });
+});
+
 // Opens the port
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
