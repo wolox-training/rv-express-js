@@ -37,3 +37,70 @@ routes.init(app);
 app.use(errors.handle);
 
 module.exports = app;
+
+// ---------
+// Request code
+// ---------
+const request = require('request');
+
+// This URL should return JSON data
+const url = 'https://jsonplaceholder.typicode.com';
+// const path = '/albums';
+let gBody = null;
+
+// request(`${url}/albums`, (error, response, body) => {
+//   // Print the error if one occurred
+//   console.log('error:', error);
+//   // Print the response status code if a response was received
+//   console.log('statusCode:', response && response.statusCode);
+//   // Print the HTML for the Google homepage.
+//   // console.log('body:', body);
+//   gbody = body;
+// });
+
+
+// -----------
+// Server code
+// -----------
+const PORT = process.env.PORT || 4001;
+// Use static server to serve the API
+app.use(express.static('public'));
+
+// `app.get()` call:
+app.get('/', (req, res, next) => {
+  console.log('/');
+  // Here we would send back the moods array in response
+  // console.log(req);
+  // `Welcome, the requested data will be printed next: ${
+  // res.json(gbody);
+  res.send('/');
+});
+
+// `app.get()` call:
+app.get('/albums', (req, res) => {
+  console.log('/albums');
+  // Here we would send back the moods array in response
+  console.log(req);
+
+  request(`${url}/albums`, (error, response, body) => {
+    // Print the error if one occurred
+    console.log('error:', error);
+    // Print the response status code if a response was received
+    console.log('statusCode:', response && response.statusCode);
+    // Print the HTML for the Google homepage.
+    // console.log('body:', body);
+    gbody = body;
+  });
+
+  res.json(gbody);
+});
+
+
+
+
+
+
+// Opens the port
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+});
