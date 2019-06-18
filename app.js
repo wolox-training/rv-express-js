@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 const { expressMiddleware, expressRequestIdMiddleware } = require('express-wolox-logger'),
   express = require('express'),
   bodyParser = require('body-parser'),
@@ -63,9 +64,8 @@ app.use('/photos', photosRouter);
 const albumsRouter = express.Router();
 app.use('/albums', albumsRouter);
 
-
 // `app.get()` call:
-app.get('/', (req, res, next) => {
+app.get('/', (req, res) => {
   console.log('/');
   // Here we would send back the moods array in response
   // console.log(req);
@@ -74,7 +74,7 @@ app.get('/', (req, res, next) => {
   res.send('Do you want to see albums, photos? Specify that in the endpoint!');
 });
 
-//We show all the albums:
+// We show all the albums:
 albumsRouter.get('/', (req, res) => {
   console.log('----/albums----');
 
@@ -91,7 +91,7 @@ albumsRouter.get('/', (req, res) => {
 
 // We show the album specified by its Id:
 albumsRouter.get('/:id', (req, res) => {
-  let id = req.params.id;
+  const { id } = req.params;
 
   console.log('\n\n----/albums by id number----');
   console.log(`Album Id: ${id}`);
@@ -107,10 +107,9 @@ albumsRouter.get('/:id', (req, res) => {
   });
 });
 
-
 // We show the photos from an album specified by its Id:
 albumsRouter.get('/:id/photos/', (req, res) => {
-  let id = req.params.id;
+  const { id } = req.params;
 
   console.log('----/photos from a certain album(specified by its Id)----');
   console.log(`Album Id: ${id}`);
@@ -126,11 +125,10 @@ albumsRouter.get('/:id/photos/', (req, res) => {
   });
 });
 
-
 // We show a photo from an album specified by its Id:
 albumsRouter.get('/:idAlbum/photos/:idPhoto', (req, res) => {
-  let idAlbum = req.params.idAlbum;
-  let idPhoto = req.params.idPhoto;
+  const { idAlbum } = req.params;
+  const { idPhoto } = req.params;
 
   console.log('----/Photo(specified by its Id) from a certain album(specified by its Id)----');
   console.log(`Album Id: ${idAlbum}`);
@@ -147,11 +145,10 @@ albumsRouter.get('/:idAlbum/photos/:idPhoto', (req, res) => {
   });
 });
 
-
 // We show all the photos:
 photosRouter.get('/', (req, res) => {
   console.log('----/photos----');
-  
+
   request(`${url}/photos`, (error, response, body) => {
     // Print the error if one occurred
     console.log('error:', error);
@@ -165,7 +162,7 @@ photosRouter.get('/', (req, res) => {
 
 // We show a photo by its Id:
 photosRouter.get('/:id', (req, res) => {
-  let id = req.params.id;
+  const { id } = req.params;
 
   console.log('----/photos by id number----');
   console.log(`Photo Id: ${id}`);
@@ -180,7 +177,6 @@ photosRouter.get('/:id', (req, res) => {
     res.send(body);
   });
 });
-
 
 // Opens the port
 app.listen(PORT, () => {
