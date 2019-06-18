@@ -57,6 +57,13 @@ const PORT = process.env.PORT || 4001;
 // Use static server to serve the API
 app.use(express.static('public'));
 
+const photosRouter = express.Router();
+app.use('/photos', photosRouter);
+
+const albumsRouter = express.Router();
+app.use('/albums', albumsRouter);
+
+
 // `app.get()` call:
 app.get('/', (req, res, next) => {
   console.log('/');
@@ -68,7 +75,7 @@ app.get('/', (req, res, next) => {
 });
 
 //We show all the albums:
-app.get('/albums', (req, res) => {
+albumsRouter.get('/', (req, res) => {
   console.log('----/albums----');
 
   request(`${url}/albums`, (error, response, body) => {
@@ -83,7 +90,7 @@ app.get('/albums', (req, res) => {
 });
 
 // We show the album specified by its Id:
-app.get('/albums/:id', (req, res) => {
+albumsRouter.get('/:id', (req, res) => {
   let id = req.params.id;
 
   console.log('\n\n----/albums by id number----');
@@ -100,41 +107,9 @@ app.get('/albums/:id', (req, res) => {
   });
 });
 
-// We show all the photos:
-app.get('/photos', (req, res) => {
-  console.log('----/photos----');
-  
-  request(`${url}/photos`, (error, response, body) => {
-    // Print the error if one occurred
-    console.log('error:', error);
-
-    // Print the response status code if a response was received
-    console.log('statusCode:', response && response.statusCode);
-
-    res.send(body);
-  });
-});
-
-// We show a photo by its Id:
-app.get('/photos/:id', (req, res) => {
-  let id = req.params.id;
-
-  console.log('----/photos by id number----');
-  console.log(`Photo Id: ${id}`);
-
-  request(`${url}/photos/${id}`, (error, response, body) => {
-    // Print the error if one occurred
-    console.log('error:', error);
-
-    // Print the response status code if a response was received
-    console.log('statusCode:', response && response.statusCode);
-
-    res.send(body);
-  });
-});
 
 // We show the photos from an album specified by its Id:
-app.get('/albums/:id/photos/', (req, res) => {
+albumsRouter.get('/:id/photos/', (req, res) => {
   let id = req.params.id;
 
   console.log('----/photos from a certain album(specified by its Id)----');
@@ -153,7 +128,7 @@ app.get('/albums/:id/photos/', (req, res) => {
 
 
 // We show a photo from an album specified by its Id:
-app.get('/albums/:idAlbum/photos/:idPhoto', (req, res) => {
+albumsRouter.get('/:idAlbum/photos/:idPhoto', (req, res) => {
   let idAlbum = req.params.idAlbum;
   let idPhoto = req.params.idPhoto;
 
@@ -162,6 +137,40 @@ app.get('/albums/:idAlbum/photos/:idPhoto', (req, res) => {
   console.log(`Photo Id: ${idPhoto}`);
 
   request(`${url}/photos?albumId=${idAlbum}&id=${idPhoto}`, (error, response, body) => {
+    // Print the error if one occurred
+    console.log('error:', error);
+
+    // Print the response status code if a response was received
+    console.log('statusCode:', response && response.statusCode);
+
+    res.send(body);
+  });
+});
+
+
+// We show all the photos:
+photosRouter.get('/', (req, res) => {
+  console.log('----/photos----');
+  
+  request(`${url}/photos`, (error, response, body) => {
+    // Print the error if one occurred
+    console.log('error:', error);
+
+    // Print the response status code if a response was received
+    console.log('statusCode:', response && response.statusCode);
+
+    res.send(body);
+  });
+});
+
+// We show a photo by its Id:
+photosRouter.get('/:id', (req, res) => {
+  let id = req.params.id;
+
+  console.log('----/photos by id number----');
+  console.log(`Photo Id: ${id}`);
+
+  request(`${url}/photos/${id}`, (error, response, body) => {
     // Print the error if one occurred
     console.log('error:', error);
 
