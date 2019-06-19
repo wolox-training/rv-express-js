@@ -1,4 +1,5 @@
 /* eslint-disable new-cap */
+
 const { expressMiddleware, expressRequestIdMiddleware } = require('express-wolox-logger'),
   express = require('express'),
   bodyParser = require('body-parser'),
@@ -36,8 +37,6 @@ routes.init(app);
 app.use(errors.handle);
 module.exports = app;
 
-// .
-
 const PORT = process.env.PORT || 4001;
 app.use(express.static('public'));
 
@@ -45,11 +44,7 @@ app.use('/photos', routes.photosRouter);
 app.use('/albums', routes.albumsRouter);
 
 app.get('/', (req, res) => {
-  console.log('/');
-
   res.send('Do you want to see albums, photos? Specify that in the endpoint!');
 });
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
-});
+app.listen(PORT);

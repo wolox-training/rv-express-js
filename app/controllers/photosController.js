@@ -3,8 +3,6 @@
 const { getAllPhotos, getPhotoById } = require('../services/photos');
 
 const showAllPhotos = (req, res) => {
-  console.log('----/Photos----');
-
   getAllPhotos()
     .then(result => res.send(result.body))
     .catch(error =>
@@ -14,8 +12,6 @@ const showAllPhotos = (req, res) => {
 
 const showPhotoById = (req, res) => {
   const { id } = req.params;
-  console.log('\n\n----/Photos by id number----');
-  console.log(`Photo Id: ${id}`);
 
   getPhotoById(id)
     .then(result => res.send(result.body))
