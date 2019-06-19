@@ -1,12 +1,6 @@
 /* eslint-disable new-cap */
 
-const requestLib = require('../helpers/request');
-
-const request = require('request');
-const { ALBUMS_API_URL: url } = require('../../config/environment.js');
-
-
-
+const {getAllAlbums} = require('../services/albums');
 
 
 // const requestAllAlbums = url => {
@@ -52,24 +46,11 @@ const { ALBUMS_API_URL: url } = require('../../config/environment.js');
 const showAllAlbums = (req, res) => {
   console.log('----/albums----');
 
-  // const myPromiseRequest = requestLib.request({
-  //   url: url,
-  //   method: 'post',
-  //   json: true,
-  //   body: body,
-  //   headers: {}
-  // });
-
-  request(`${url}/albums`, (error, response, body) => {
-    console.log('error:', error);
-    console.log('statusCode:', response && response.statusCode);
-
-    res.send(body);
-  })
-
-  // myPromiseRequest.then(res.send(body)).catch();
-
-  // res.send(requestAllAlbums(req, res, url));
+  getAllAlbums()
+    .then(result => res.send(result.body))
+    .catch(error =>
+      res.status(500).send({ error: `There where errors getting albums ${JSON.stringify(error)}` })
+    );
 };
 
 const showAlbumById = (req, res) => {
