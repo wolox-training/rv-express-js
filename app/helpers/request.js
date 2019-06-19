@@ -1,8 +1,9 @@
 /* eslint-disable prefer-promise-reject-errors */
 
 const request = require('request');
-exports.request = options => {
-  return new Promise((resolve, reject) => {
+
+exports.request = options =>
+  new Promise((resolve, reject) => {
     request[options.method](options, (error, response) => {
       if (error) {
         console.log({ ...error, ...options });
@@ -21,4 +22,3 @@ exports.request = options => {
       return resolve(response);
     });
   });
-};
