@@ -16,19 +16,15 @@ const showAllAlbums = (req, res) => {
 };
 
 const showAlbumById = (req, res) => {
-  const { id } = req.params;
-
-  getAlbumById(id)
+  getAlbumById(req.params)
     .then(result => res.send(result.body))
     .catch(error =>
-      res.status(500).send({ error: `There where errors getting albums ${JSON.stringify(error)}` })
+      res.status(500).send({ error: `There were errors getting albums ${JSON.stringify(error)}` })
     );
 };
 
 const showPhotosFromAlbum = (req, res) => {
-  const { id } = req.params;
-
-  getPhotosFromAlbum(id)
+  getPhotosFromAlbum(req.params)
     .then(result => res.send(result.body))
     .catch(error =>
       res.status(500).send({ error: `There where errors getting albums ${JSON.stringify(error)}` })
