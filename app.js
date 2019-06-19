@@ -24,7 +24,6 @@ const app = express();
 
 app.use('/docs', express.static(path.join(__dirname, 'docs')));
 
-// Client must send "Content-Type: application/json" header
 app.use(bodyParser.json(bodyParserJsonConfig()));
 app.use(bodyParser.urlencoded(bodyParserUrlencodedConfig()));
 app.use(expressRequestIdMiddleware);
