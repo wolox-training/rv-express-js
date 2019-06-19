@@ -1,6 +1,11 @@
 /* eslint-disable new-cap */
 
-const { getAllAlbums, getAlbumById, getPhotosFromAlbum, getPhotoFromAlbumByIds } = require('../services/albums');
+const {
+  getAllAlbums,
+  getAlbumById,
+  getPhotosFromAlbum,
+  getPhotoFromAlbumByIds
+} = require('../services/albums');
 
 const showAllAlbums = (req, res) => {
   console.log('----/albums----');
