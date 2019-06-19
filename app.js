@@ -50,8 +50,8 @@ app.use(express.static('public'));
 // const photosRouter = require('./app/routes.js');
 // app.use('/photos', photosRouter);
 
-const albumsRouter = require('./app/routes2');
-app.use('/albums', albumsRouter);
+// const albumsRouterLib = require('./app/routes');
+app.use('/albums', routes.albumsRouter);
 
 app.get('/', (req, res) => {
   console.log('/');
