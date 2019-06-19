@@ -45,7 +45,6 @@ module.exports = app;
 
 const PORT = process.env.PORT || 4001;
 
-// Use static server to serve the API
 app.use(express.static('public'));
 
 // const photosRouter = require('./app/routes.js');
@@ -54,13 +53,9 @@ app.use(express.static('public'));
 const albumsRouter = require('./app/routes2');
 app.use('/albums', albumsRouter);
 
-// `app.get()` call:
 app.get('/', (req, res) => {
   console.log('/');
-  // Here we would send back the moods array in response
-  // console.log(req);
-  // `Welcome, the requested data will be printed next: ${
-  // res.json(gbody);
+
   res.send('Do you want to see albums, photos? Specify that in the endpoint!');
 });
 
