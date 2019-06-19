@@ -34,23 +34,15 @@ if (!config.isTesting) {
 }
 
 routes.init(app);
-
 app.use(errors.handle);
-
 module.exports = app;
 
 // .
-// .
-// .
 
 const PORT = process.env.PORT || 4001;
-
 app.use(express.static('public'));
 
-// const photosRouter = require('./app/routes.js');
-// app.use('/photos', photosRouter);
-
-// const albumsRouterLib = require('./app/routes');
+app.use('/photos', routes.photosRouter);
 app.use('/albums', routes.albumsRouter);
 
 app.get('/', (req, res) => {

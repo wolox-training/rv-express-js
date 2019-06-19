@@ -56,33 +56,4 @@ const showPhotoFromAlbumByIds = (req, res) => {
     );
 };
 
-// const photosRouter = express.Router();
-
-// photosRouter.get('/', (req, res) => {
-//   console.log('----/photos----');
-
-//   request(`${url}/photos`, (error, response, body) => {
-//     console.log('error:', error);
-
-//     console.log('statusCode:', response && response.statusCode);
-
-//     res.send(body);
-//   });
-// });
-
-// photosRouter.get('/:id', (req, res) => {
-//   const { id } = req.params;
-
-//   console.log('----/photos by id number----');
-//   console.log(`Photo Id: ${id}`);
-
-//   request(`${url}/photos/${id}`, (error, response, body) => {
-//     console.log('error:', error);
-
-//     console.log('statusCode:', response && response.statusCode);
-
-//     res.send(body);
-//   });
-// });
-
 module.exports = { showAllAlbums, showAlbumById, showPhotosFromAlbum, showPhotoFromAlbumByIds };
