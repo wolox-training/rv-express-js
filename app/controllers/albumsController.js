@@ -1,16 +1,8 @@
 /* eslint-disable new-cap */
 
-
-
 const requestLib = require('../helpers/request');
-const request = requestLib( {
-                              url: 'URL',
-                              method: 'post',
-                              json: true,
-                              body: {},
-                              headers: {} });
 
-// const request = require('request');
+const request = require('request');
 const { ALBUMS_API_URL: url } = require('../../config/environment.js');
 
 
@@ -60,12 +52,22 @@ const { ALBUMS_API_URL: url } = require('../../config/environment.js');
 const showAllAlbums = (req, res) => {
   console.log('----/albums----');
 
+  // const myPromiseRequest = requestLib.request({
+  //   url: url,
+  //   method: 'post',
+  //   json: true,
+  //   body: body,
+  //   headers: {}
+  // });
+
   request(`${url}/albums`, (error, response, body) => {
     console.log('error:', error);
     console.log('statusCode:', response && response.statusCode);
 
     res.send(body);
-  });
+  })
+
+  // myPromiseRequest.then(res.send(body)).catch();
 
   // res.send(requestAllAlbums(req, res, url));
 };
@@ -75,6 +77,14 @@ const showAlbumById = (req, res) => {
 
   console.log('\n\n----/albums by id number----');
   console.log(`Album Id: ${id}`);
+
+  // const myPromiseRequest = requestLib.request({
+  //   url: 'URL',
+  //   method: 'post',
+  //   json: true,
+  //   body: {},
+  //   headers: {}
+  // });
 
   request(`${url}/albums/${id}`, (error, response, body) => {
     console.log('error:', error);
@@ -92,6 +102,14 @@ const showPhotosFromAlbum = (req, res) => {
   console.log('----/photos from a certain album(specified by its Id)----');
   console.log(`Album Id: ${id}`);
 
+  // const myPromiseRequest = requestLib.request({
+  //   url: 'URL',
+  //   method: 'post',
+  //   json: true,
+  //   body: {},
+  //   headers: {}
+  // });
+
   request(`${url}/photos?albumId=${id}`, (error, response, body) => {
     console.log('error:', error);
     console.log('statusCode:', response && response.statusCode);
@@ -108,6 +126,14 @@ const showPhotoFromAlbumByIds = (req, res) => {
   console.log('----/Photo(specified by its Id) from a certain album(specified by its Id)----');
   console.log(`Album Id: ${idAlbum}`);
   console.log(`Photo Id: ${idPhoto}`);
+
+  // const myPromiseRequest = requestLib.request({
+  //   url: 'URL',
+  //   method: 'post',
+  //   json: true,
+  //   body: {},
+  //   headers: {}
+  // });
 
   request(`${url}/photos?albumId=${idAlbum}&id=${idPhoto}`, (error, response, body) => {
     console.log('error:', error);
