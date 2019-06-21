@@ -1,8 +1,24 @@
-// const controller = require('./controllers/controller');
+/* eslint-disable new-cap */
+
+const express = require('express');
+const albumsController = require('./controllers/albumsController');
+const photosController = require('./controllers/photosController');
 const { healthCheck } = require('./controllers/healthCheck');
-exports.init = app => {
+
+const init = app => {
   app.get('/health', healthCheck);
-  // app.get('/endpoint/get/path', [], controller.methodGET);
-  // app.put('/endpoint/put/path', [], controller.methodPUT);
-  // app.post('/endpoint/post/path', [], controller.methodPOST);
 };
+
+const photosRouter = express.Router();
+
+photosRouter.get('/', photosController.showAllPhotos);
+photosRouter.get('/:id', photosController.showPhotoById);
+
+const albumsRouter = express.Router();
+
+albumsRouter.get('/', albumsController.showAllAlbums);
+albumsRouter.get('/:id', albumsController.showAlbumById);
+albumsRouter.get('/:id/photos/', albumsController.showPhotosFromAlbum);
+albumsRouter.get('/:idAlbum/photos/:idPhoto', albumsController.showPhotoFromAlbumByIds);
+
+module.exports = { albumsRouter, photosRouter, init };
