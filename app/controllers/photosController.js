@@ -11,12 +11,12 @@ const showAllPhotos = (req, res) => {
 };
 
 const showPhotoById = (req, res) => {
-  const { id } = req.params;
-
-  getPhotoById(id)
+  getPhotoById(req.params.id)
     .then(result => res.send(result.body))
     .catch(error =>
-      res.status(500).send({ error: `There where errors getting photos ${JSON.stringify(error)}` })
+      res
+        .status(500)
+        .send({ error: `There where errors getting the photo ${req.params.id} ${JSON.stringify(error)}` })
     );
 };
 

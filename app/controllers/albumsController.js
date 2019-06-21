@@ -11,33 +11,42 @@ const showAllAlbums = (req, res) => {
   getAllAlbums()
     .then(result => res.send(result.body))
     .catch(error =>
-      res.status(500).send({ error: `There where errors getting albums ${JSON.stringify(error)}` })
+      res.status(500).send({ error: `There where errors getting the albums ${JSON.stringify(error)}` })
     );
 };
 
 const showAlbumById = (req, res) => {
-  getAlbumById(req.params)
+  getAlbumById(req.params.id)
     .then(result => res.send(result.body))
     .catch(error =>
-      res.status(500).send({ error: `There were errors getting albums ${JSON.stringify(error)}` })
+      res
+        .status(500)
+        .send({ error: `There were errors getting the album ${req.params.id} ${JSON.stringify(error)}` })
     );
 };
 
 const showPhotosFromAlbum = (req, res) => {
-  getPhotosFromAlbum(req.params)
+  getPhotosFromAlbum(req.params.id)
     .then(result => res.send(result.body))
     .catch(error =>
-      res.status(500).send({ error: `There where errors getting albums ${JSON.stringify(error)}` })
+      res.status(500).send({
+        error: `There where errors getting the Photos from the Album ${req.params.id} ${JSON.stringify(
+          error
+        )}`
+      })
     );
 };
 
 const showPhotoFromAlbumByIds = (req, res) => {
   const { idPhoto, idAlbum } = req.params;
-
   getPhotoFromAlbumByIds(idAlbum, idPhoto)
     .then(result => res.send(result.body))
     .catch(error =>
-      res.status(500).send({ error: `There where errors getting albums ${JSON.stringify(error)}` })
+      res.status(500).send({
+        error: `There where errors getting the photo ${idPhoto} from the Album ${idAlbum} ${JSON.stringify(
+          error
+        )}`
+      })
     );
 };
 
