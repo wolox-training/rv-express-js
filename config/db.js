@@ -26,3 +26,7 @@ module.exports = {
     logging: false
   }
 };
+
+// Nombre de las bases de datos:
+// Para la de develompent: rv-express-dev
+// Para la de test: rv-express-test
