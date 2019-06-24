@@ -7,7 +7,7 @@ const User = sequelize.define('user', {
   FirstName: { type: sequelize.STRING, required: true },
   LastName: { type: sequelize.STRING, required: true },
   Email: { type: sequelize.STRING, required: true },
-  Contraseña: { type: sequelize.STRING, required: true }
+  Contrasenia: { type: sequelize.STRING, required: true }
 });
 
 // - ID: requerido, único, auto incremental.
