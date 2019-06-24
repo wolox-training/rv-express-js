@@ -10,10 +10,6 @@ module.exports = {
         type: Sequelize.INTEGER,
         required: true
       },
-      ID: {
-        type: Sequelize.STRING,
-        required: true
-      },
       FirstName: {
         type: Sequelize.STRING,
         required: true
