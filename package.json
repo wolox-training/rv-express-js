@@ -20,7 +20,7 @@
     "pretest": "npm run lint",
     "prestart": "npm run lint",
     "migrations": "sequelize db:migrate",
-    "migrations-test": "sequelize db:migrate && NODE_ENV=testing jest test/app --runInBand --forceExit",
+    "migrations-test": "sequelize db:migrate",
     "start": "nodemon --inspect server.js"
   },
   "cacheDirectories": [
