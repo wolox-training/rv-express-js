@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       FirstName: { type: DataTypes.STRING, required: true },
       LastName: { type: DataTypes.STRING, required: true },
       Email: { type: DataTypes.STRING, required: true },
-      Contrasenia: { type: DataTypes.STRING, required: true }
+      Password: { type: DataTypes.STRING, required: true }
     },
     {}
   );

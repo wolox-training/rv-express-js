@@ -7,22 +7,28 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        required: true
       },
       ID: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        required: true
       },
       FirstName: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        required: true
       },
       LastName: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        required: true
       },
       Email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        required: true
       },
-      Contrasenia: {
-        type: Sequelize.STRING
+      Password: {
+        type: Sequelize.STRING,
+        required: true
       },
       createdAt: {
         allowNull: false,
