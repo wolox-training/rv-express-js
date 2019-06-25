@@ -6,7 +6,7 @@ const showAllPhotos = (req, res) => {
   getAllPhotos()
     .then(result => res.send(result.body))
     .catch(error =>
-      res.status(500).send({ error: `There where errors getting photos ${JSON.stringify(error)}` })
+      res.status(500).send({ error: `There were errors getting all the photos ${JSON.stringify(error)}` })
     );
 };
 
@@ -16,7 +16,7 @@ const showPhotoById = (req, res) => {
     .catch(error =>
       res
         .status(500)
-        .send({ error: `There where errors getting the photo ${req.params.id} ${JSON.stringify(error)}` })
+        .send({ error: `There were errors getting the photo ${req.params.id} ${JSON.stringify(error)}` })
     );
 };
 

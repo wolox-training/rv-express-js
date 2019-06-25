@@ -11,7 +11,7 @@ const showAllAlbums = (req, res) => {
   getAllAlbums()
     .then(result => res.send(result.body))
     .catch(error =>
-      res.status(500).send({ error: `There where errors getting the albums ${JSON.stringify(error)}` })
+      res.status(500).send({ error: `There were errors getting all the albums ${JSON.stringify(error)}` })
     );
 };
 
@@ -30,7 +30,7 @@ const showPhotosFromAlbum = (req, res) => {
     .then(result => res.send(result.body))
     .catch(error =>
       res.status(500).send({
-        error: `There where errors getting the Photos from the Album ${req.params.id} ${JSON.stringify(
+        error: `There were errors getting all the photos from the Album ${req.params.id} ${JSON.stringify(
           error
         )}`
       })
@@ -43,7 +43,7 @@ const showPhotoFromAlbumByIds = (req, res) => {
     .then(result => res.send(result.body))
     .catch(error =>
       res.status(500).send({
-        error: `There where errors getting the photo ${idPhoto} from the Album ${idAlbum} ${JSON.stringify(
+        error: `There were errors getting the photo ${idPhoto} from the Album ${idAlbum} ${JSON.stringify(
           error
         )}`
       })
