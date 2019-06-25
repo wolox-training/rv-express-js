@@ -32,7 +32,7 @@ const config = {
       port: process.env.DB_PORT,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-      name: `rv-express-${process.env.NODE_ENV}`
+      name: `rvexpress${process.env.NODE_ENV}`
     },
     api: {
       bodySizeLimit: process.env.API_BODY_SIZE_LIMIT,
