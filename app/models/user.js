@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const myUser2 = sequelize.define(
-    'myUser2',
+  const User = sequelize.define(
+    'User',
     {
       FirstName: { type: DataTypes.STRING, required: true },
       LastName: { type: DataTypes.STRING, required: true },
@@ -12,9 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
 
-  myUser2.associate = models => {
+  User.associate = models => {
     // associations can be defined here
   };
 
-  return myUser2;
+  return User;
 };
