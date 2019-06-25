@@ -18,8 +18,8 @@ services:
   - postgresql
 
 before_script:
-  - psql -c "CREATE DATABASE bookstest;" -U postgres
-  # - npm run migrations-test
+  - psql -c "CREATE DATABASE rvexpresstesting;" -U postgres
+  - npm run migrations-test
 
 script:
   - npm run lint
