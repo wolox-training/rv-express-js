@@ -42,19 +42,20 @@ app.use(express.static('public'));
 
 app.use('/photos', routes.photosRouter);
 app.use('/albums', routes.albumsRouter);
+app.use('/users', routes.usersRouter);
 
-const userController = require('./app/controllers/usersController');
+// const userController = require('./app/controllers/usersController');
 
-const newUser = {
-  FirstName: 'hol',
-  LastName: 'asd',
-  email: 'asdf',
-  password: 'asfdf'
-};
+// const newUser = {
+//   FirstName: 'hol',
+//   LastName: 'asd',
+//   email: 'asdf',
+//   password: 'asfdf'
+// };
 
 app.get('/', (req, res) => {
   res.send('Do you want to see albums, photos? Specify that in the endpoint!');
-  userController.addUser(newUser);
+  // userController.addUser(newUser);
 });
 
 app.listen(PORT);
