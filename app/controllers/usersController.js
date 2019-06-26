@@ -1,4 +1,8 @@
 const { registerUser } = require('../services/users');
+const logger = require('../logger/index');
+
+// logger.info('hola');
+// logger.error('hola');
 
 const addUser = (req, res) => {
   const regexAlphanumeric = /^[a-zA-Z0-9]*$/;
@@ -14,11 +18,13 @@ const addUser = (req, res) => {
 
   if (password.length < 8) {
     res.status(500).send({ error: 'Password too short!' });
+    logger.error('Password too short!');
     return;
   }
 
   if (regexAlphanumeric.test(password) === false) {
     res.status(500).send({ error: 'Password is not alphanumeric!' });
+    logger.error('Password is not alphanumeric!');
     return;
   }
 
@@ -26,16 +32,23 @@ const addUser = (req, res) => {
 
   if (regexValidEmail.test(email) === false) {
     res.status(500).send({ error: 'Email not valid!' });
+    logger.error('Email not valid!');
     return;
   }
 
   registerUser({ firstName, lastName, email, password })
-    .then(result => res.send(`The user ${firstName} ${lastName} was successfully created ${result.mybody}`))
-    .catch(error =>
+    .then(result => {
+      res.send(`The user ${firstName} ${lastName} was successfully created ${result.mybody}`);
+      logger.info(`The user ${firstName} ${lastName} was successfully created ${result.mybody}`);
+    })
+    .catch(error => {
       res.status(500).send({
         error: `There were errors when adding the user ${firstName} ${lastName}: ${JSON.stringify(error)}`
-      })
-    );
+      });
+      logger.error(
+        `There were errors when adding the user ${firstName} ${lastName}: ${JSON.stringify(error)}`
+      );
+    });
 };
 
 module.exports = { addUser };
