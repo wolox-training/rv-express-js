@@ -1,4 +1,4 @@
-const { registerUser } = require('../services/users');
+const { registerUser, obtainAllUsers } = require('../services/users');
 const { encryptPassword } = require('../helpers/encryption');
 const { isPasswordAlphanumeric, isPasswordLenghtvalid, isEmailValid } = require('../validators/users');
 const logger = require('../logger/index');
@@ -42,4 +42,6 @@ const addUser = (req, res) => {
     });
 };
 
-module.exports = { addUser };
+const getAllUsers = () => obtainAllUsers();
+
+module.exports = { addUser, getAllUsers };
