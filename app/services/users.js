@@ -1,5 +1,5 @@
 const { User } = require('../models');
 
-const registerUser = user => User.create(user).catch(error => Promise.reject(error));
+const registerUser = user => User.create(user);
 
 module.exports = { registerUser };

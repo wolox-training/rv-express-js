@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     'User',
     {
+      id: { type: DataTypes.INTEGER, allowNull: false, autoIncrement: true, primaryKey: true },
       firstName: { type: DataTypes.STRING, allowNull: false /* , field: 'first_name'*/ },
       lastName: { type: DataTypes.STRING, allowNull: false /* , field: 'last_name'*/ },
       email: { type: DataTypes.STRING, allowNull: false, unique: true },
@@ -11,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       // underscored: true
-      // tableName: 'users'
+      tableName: 'users'
     }
   );
 

@@ -1,36 +1,27 @@
 const { registerUser } = require('../services/users');
+const { encryptPassword } = require('../helpers/encryption');
+const { isPasswordAlphanumeric, isPasswordLenghtvalid, isEmailValid } = require('../validators/users');
 const logger = require('../logger/index');
 
-// logger.info('hola');
-// logger.error('hola');
-
 const addUser = (req, res) => {
-  const regexAlphanumeric = /^[a-zA-Z0-9]*$/;
-  // eslint-disable-next-line no-useless-escape
-  const regexValidEmail = /^([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)@wolox.com.ar$/;
-
   const { firstName, lastName, email } = req.body;
   let { password } = req.body;
 
-  const bcrypt = require('bcryptjs');
-  const salt = bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync(password, salt);
-
-  if (password.length < 8) {
+  if (isPasswordLenghtvalid(password) === false) {
     res.status(500).send({ error: 'Password too short!' });
     logger.error('Password too short!');
     return;
   }
 
-  if (regexAlphanumeric.test(password) === false) {
+  if (isPasswordAlphanumeric(password) === false) {
     res.status(500).send({ error: 'Password is not alphanumeric!' });
     logger.error('Password is not alphanumeric!');
     return;
   }
 
-  password = hash;
+  password = encryptPassword(password);
 
-  if (regexValidEmail.test(email) === false) {
+  if (isEmailValid(email) === false) {
     res.status(500).send({ error: 'Email not valid!' });
     logger.error('Email not valid!');
     return;
