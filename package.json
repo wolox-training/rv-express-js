@@ -21,7 +21,11 @@
     "prestart": "npm run lint",
     "migrations": "sequelize db:migrate",
     "migrations-test": "sequelize db:migrate",
-    "start": "nodemon --inspect server.js"
+    "start": "nodemon --inspect server.js",
+    "js-add": "node add.js",
+    "say-hello": "echo 'Hello World'",
+    "presay-hello": "echo 'I run before say-hello'",
+    "postsay-hello": "echo 'I run after say-hello'"
   },
   "cacheDirectories": [
     "node_modules"
@@ -77,7 +81,7 @@
     "eslint-config-prettier": "^2.3.1",
     "eslint-config-wolox": "^2.2.1",
     "eslint-config-wolox-node": "^1.0.0",
-    "eslint-plugin-import": "^2.6.1",
+    "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-prettier": "^3.0.1",
     "husky": "^0.14.3",
     "istanbul": "^0.4.3",
