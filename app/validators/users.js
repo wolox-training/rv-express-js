@@ -1,51 +1,22 @@
-const { encryptPassword } = require('../helpers/encryption');
+/* eslint-disable curly */
 
 const regexAlphanumeric = /^[a-zA-Z0-9]*$/;
 // eslint-disable-next-line no-useless-escape
 const regexValidEmail = /^([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)@wolox.com.ar$/;
 
-const isPasswordLenghtvalid = password => {
-  if (password.length < 8) {
-    return false;
-  }
-  return true;
-};
+const isPasswordLenghtvalid = password => password.length > 8;
+const isPasswordAlphanumeric = password => regexAlphanumeric.test(password);
+const isEmailValid = email => regexValidEmail.test(email);
 
-const isPasswordAlphanumeric = password => {
-  if (!regexAlphanumeric.test(password)) {
-    return false;
-  }
-  return true;
-};
-
-const isEmailValid = email => {
-  if (!regexValidEmail.test(email)) {
-    return false;
-  }
-  return true;
-};
-
-const isUserValid = user => {
+const validate = user => {
   const { email, password } = user;
+  const errors = [];
 
-  if (!isPasswordLenghtvalid(password)) {
-    user.status = 'Password too short!';
-    return false;
-  }
+  if (!isPasswordLenghtvalid(password)) errors.push('Password too short!');
+  if (!isPasswordAlphanumeric(password)) errors.push('Password is not alphanumeric!');
+  if (!isEmailValid(email)) errors.push('Email not valid!');
 
-  if (!isPasswordAlphanumeric(password)) {
-    user.status = 'Password is not alphanumeric!';
-    return false;
-  }
-
-  user.password = encryptPassword(password);
-
-  if (!isEmailValid(email)) {
-    user.status = 'Email not valid!';
-    return false;
-  }
-
-  return true;
+  return { errors };
 };
 
-module.exports = { isUserValid };
+module.exports = { validate };
