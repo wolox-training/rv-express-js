@@ -5,12 +5,16 @@ const logger = require('../logger/index');
 
 const addUser = (req, res) => {
   const user = req.body;
-
   if (!isUserValid(user)) {
     res.status(500).send({ error: `User is not valid: ${user.status}` });
     logger.error(`User is not valid: ${user.status}`);
     return;
   }
+
+  obtainAllUsers().then(result => {
+    console.log('hola');
+    console.log(result);
+  });
 
   registerUser(user)
     .then(result => {
@@ -31,6 +35,4 @@ const addUser = (req, res) => {
     });
 };
 
-const getAllUsers = () => obtainAllUsers();
-
-module.exports = { addUser, getAllUsers };
+module.exports = { addUser };
