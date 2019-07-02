@@ -42,6 +42,7 @@ app.use(express.static('public'));
 
 app.use('/photos', routes.photosRouter);
 app.use('/albums', routes.albumsRouter);
+app.use('/users', routes.usersRouter);
 
 app.get('/', (req, res) => {
   res.send('Do you want to see albums, photos? Specify that in the endpoint!');

@@ -3,6 +3,7 @@
 const express = require('express');
 const albumsController = require('./controllers/albumsController');
 const photosController = require('./controllers/photosController');
+const usersController = require('./controllers/usersController');
 const { healthCheck } = require('./controllers/healthCheck');
 
 const init = app => {
@@ -21,4 +22,8 @@ albumsRouter.get('/:id', albumsController.showAlbumById);
 albumsRouter.get('/:id/photos/', albumsController.showPhotosFromAlbum);
 albumsRouter.get('/:idAlbum/photos/:idPhoto', albumsController.showPhotoFromAlbumByIds);
 
-module.exports = { albumsRouter, photosRouter, init };
+const usersRouter = express.Router();
+
+usersRouter.post('/', usersController.addUser);
+
+module.exports = { albumsRouter, photosRouter, usersRouter, init };
