@@ -4,7 +4,6 @@ const express = require('express');
 const albumsController = require('./controllers/albumsController');
 const photosController = require('./controllers/photosController');
 const usersController = require('./controllers/usersController');
-const validate = require('./middlewares/validations');
 const { healthCheck } = require('./controllers/healthCheck');
 
 const init = app => {
@@ -25,6 +24,6 @@ albumsRouter.get('/:idAlbum/photos/:idPhoto', albumsController.showPhotoFromAlbu
 
 const usersRouter = express.Router();
 
-usersRouter.post('/', [validate], usersController.addUser);
+usersRouter.post('/', usersController.addUser);
 
 module.exports = { albumsRouter, photosRouter, usersRouter, init };
