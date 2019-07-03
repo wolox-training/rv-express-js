@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 describe('first test', () => {
   test('first test', () => {
     expect(3).toEqual(3);
@@ -31,13 +32,94 @@ test('null', () => {
 const { obtainAllUsers } = require('../app/services/users');
 const { addUser } = require('../app/controllers/usersController');
 
+describe('Adds user to the database', () => {
+  const req = {
+    body: {
+      firstName: 'rodrigo',
+      lastName: 'videla',
+      email: 'rodrigo.videla@wolox.com.ar',
+      password: 'addddddsffh'
+    }
+  };
+
+  const res = {
+    k_status: null,
+    k_send: null,
+    status(string) {
+      this.k_status = string;
+      // console.log(string);
+      return this;
+    },
+    send(string) {
+      this.k_send = string;
+      // console.log(string);
+      return this;
+    }
+  };
+
+  beforeEach(() => addUser(req, res));
+
+  it('should add user correctly to the database', () => {
+    expect(res.k_send).toBe('The user rodrigo videla was successfully created.');
+    return obtainAllUsers({ where: { email: 'rodrigo.videla@wolox.com.ar' } }).then(result => {
+      expect(result[0].email).toBe(req.body.email);
+    });
+  });
+});
+
 describe('Password length test', () => {
   const req = {
     body: {
       firstName: 'rodrigo',
       lastName: 'videla',
       email: 'rodrigo.videla@wolox.com.ar',
-      password: 'asffh'
+      password: 'addsffh'
+    }
+  };
+
+  const res = {
+    k_status: null,
+    k_send: null,
+    status(string) {
+      this.k_status = string;
+      // console.log(string);
+      return this;
+    },
+    send(string) {
+      this.k_send = string;
+      // console.log(string);
+      return this;
+    }
+  };
+
+  beforeEach(() => addUser(req, res));
+
+  it('should return password length invalid', () => {
+    expect(res.k_send).toBe({
+      error:
+        'The input user data: rodrigo videla rodrigo.videla@wolox.com.ar is not valid: Password too short!'
+    });
+    // return obtainAllEmails().then(result => {
+    //   console.log(`I print the results ${result}`);
+    //   console.log(`I print the results ${result}`);
+    //   console.log(`I print the results ${result}`);
+    //   console.log(`I print the results ${result}`);
+    return obtainAllUsers({ attributes: ['email'], where: { email: 'rvidela@outlook.com' } }).then(result => {
+      expect(result[0].email).not.toBe(req.body.email);
+      console.log(`I print the results ${JSON.stringify(result)}`);
+      console.log(`I print the results ${result[0].email}`);
+      console.log(`I print the results ${req.body.email}`);
+    });
+  });
+});
+
+describe('Password length test', () => {
+  const req = {
+    body: {
+      firstName: 'rodrigo',
+      lastName: 'videla',
+      email: 'rodrigo.videla@wolox.com.ar',
+      password: 'addddddsffh'
     }
   };
 
@@ -60,14 +142,30 @@ describe('Password length test', () => {
 
   it('should return password length invalid', () => {
     expect(res.k_send).toBe('The user rodrigo videla was successfully created.');
-    return obtainAllUsers().then(result => {
-      console.log(`I print the results ${result[0].firstName}`);
-      console.log(`I print the results ${result[0].lastName}`);
-      console.log(`I print the results ${result[0].password}`);
+    // return obtainAllEmails().then(result => {
+    //   console.log(`I print the results ${result}`);
+    //   console.log(`I print the results ${result}`);
+    //   console.log(`I print the results ${result}`);
+    //   console.log(`I print the results ${result}`);
+    return obtainAllUsers({ attributes: ['email'], where: { email: 'rvidela@outlook.com' } }).then(result => {
+      expect(result[0].email).not.toBe(req.body.email);
+      console.log(`I print the results ${JSON.stringify(result)}`);
       console.log(`I print the results ${result[0].email}`);
+      console.log(`I print the results ${req.body.email}`);
     });
   });
 });
+
+// return obtainAllUsers().then(result => {
+//   console.log(result);
+//   console.log(`I print the results ${result}`);
+//   console.log(`I print the results ${JSON.stringify(result)}`);
+//   console.log(`I print the results ${result[0].firstName}`);
+//   console.log(`I print the results ${result[0].lastName}`);
+//   console.log(`I print the results ${result[0].password}`);
+//   console.log(`I print the results ${result[0].email}`);
+//   console.log(`I print the results ${req.body.email}`);
+//   console.log(`I print the results ${result.email}`); //undefined
 
 describe('Password alphanumeric test', () => {
   const req = {

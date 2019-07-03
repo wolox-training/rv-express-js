@@ -1,6 +1,6 @@
 const { User } = require('../models');
 
-const obtainAllUsers = () => User.findAll();
+const obtainAllUsers = parameters => User.findAll(parameters);
 const registerUser = user => User.create(user);
 
 module.exports = { registerUser, obtainAllUsers };
