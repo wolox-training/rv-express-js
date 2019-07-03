@@ -21,8 +21,6 @@
     "prestart": "npm run lint",
     "migrations": "sequelize db:migrate",
     "migrations-test": "sequelize db:migrate",
-    "start": "nodemon --inspect server.js",
-    "js-add": "node add.js",
     "say-hello": "echo 'Hello World'",
     "presay-hello": "echo 'I run before say-hello'",
     "postsay-hello": "echo 'I run after say-hello'"
