@@ -3,9 +3,12 @@ const { encryptPassword } = require('../helpers/encryption');
 const logger = require('../logger/index');
 
 const addUser = (req, res) => {
-  const user = req.body;
+  const { firstName, lastName, email } = req.body;
+  let { password } = req.body;
 
-  user.password = encryptPassword(user.password);
+  password = encryptPassword(password);
+
+  const user = { firstName, lastName, email, password };
 
   return registerUser(user)
     .then(result => {
