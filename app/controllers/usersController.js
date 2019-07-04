@@ -2,6 +2,7 @@
 const { registerUser } = require('../services/users');
 const { encryptPassword, checkPassword } = require('../helpers/encryption');
 const { obtainAllUsers } = require('../services/users');
+const { isEmailValid } = require('../validators/users');
 const logger = require('../logger/index');
 const jwt = require('jsonwebtoken');
 
@@ -34,7 +35,13 @@ const addUser = (req, res) => {
 
 const signUp = (req, res) => {
   const { email, password } = req.body;
+
   return obtainAllUsers({ where: { email } }).then(result => {
+    if (!isEmailValid(email)) {
+      logger.info(`The email: ${email} is not a valid WOLOX email.`);
+      return res.status(500).send(`The email: ${email} is not a valid WOLOX email.`);
+    }
+
     if (result[0] === undefined) {
       logger.info(`The email: ${email} is not registered.`);
       return res.status(500).send(`The email: ${email} is not registered.`);
@@ -61,6 +68,7 @@ const me = (req, res) => {
     (req.body && req.body.access_token) ||
     (req.query && req.query.access_token) ||
     req.headers['x-access-token'];
+
   if (!token) {
     return res.status(401).send({ auth: false, message: 'No token provided.' });
   }

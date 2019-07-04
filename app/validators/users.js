@@ -19,4 +19,4 @@ const validate = user => {
   return { errors };
 };
 
-module.exports = { validate };
+module.exports = { validate, isEmailValid };
