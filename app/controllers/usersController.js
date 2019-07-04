@@ -1,22 +1,14 @@
 const { registerUser } = require('../services/users');
-const { validate } = require('../validators/users');
 const { encryptPassword } = require('../helpers/encryption');
 const logger = require('../logger/index');
 
 const addUser = (req, res) => {
-  const user = req.body;
-  const validationErrors = validate(user).errors;
+  const { firstName, lastName, email } = req.body;
+  let { password } = req.body;
 
-  if (validationErrors.length) {
-    logger.error(
-      `The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: ${validationErrors}`
-    );
-    return res.status(500).send({
-      error: `The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: ${validationErrors}`
-    });
-  }
+  password = encryptPassword(password);
 
-  user.password = encryptPassword(user.password);
+  const user = { firstName, lastName, email, password };
 
   return registerUser(user)
     .then(result => {
