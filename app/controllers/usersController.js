@@ -1,7 +1,9 @@
+/* eslint-disable no-extra-parens */
 const { registerUser } = require('../services/users');
 const { encryptPassword, checkPassword } = require('../helpers/encryption');
 const { obtainAllUsers } = require('../services/users');
 const logger = require('../logger/index');
+const jwt = require('jsonwebtoken');
 
 const addUser = (req, res) => {
   const { firstName, lastName, email } = req.body;
@@ -32,24 +34,45 @@ const addUser = (req, res) => {
 
 const signUp = (req, res) => {
   const { email, password } = req.body;
-  console.log(email);
-  console.log(password);
   return obtainAllUsers({ where: { email } }).then(result => {
-    // console.log(result[0]);
-    console.log(password);
     if (result[0] === undefined) {
-      console.log('email not registered');
-      res.status(500).send(`The user ${email} ${password} was not found.`);
-    } else {
-      console.log('not undefined!!');
-      if (checkPassword(password, result[0].password)) {
-        console.log('authenticated!!');
-        res.status(500).send(`The password for the user ${email} ${password} was right.`);
-      } else {
-        res.status(500).send(`The password for the user ${email} ${password} was wrong.`);
-      }
+      logger.info(`The email: ${email} is not registered.`);
+      return res.status(500).send(`The email: ${email} is not registered.`);
     }
+
+    if (!checkPassword(password, result[0].password)) {
+      logger.info(`The password for the user with the email: ${email} was wrong.`);
+      return res.status(500).send(`The password for the user with the email: ${email} was wrong.`);
+    }
+
+    const token = jwt.sign(
+      {
+        email
+      },
+      'shhhhh'
+    );
+    logger.info('Password OK, token sended.');
+    return res.status(200).send({ auth: true, token });
   });
 };
 
-module.exports = { addUser, signUp };
+const me = (req, res) => {
+  const token =
+    (req.body && req.body.access_token) ||
+    (req.query && req.query.access_token) ||
+    req.headers['x-access-token'];
+  if (!token) {
+    console.log(token);
+    return res.status(401).send({ auth: false, message: 'No token provided.' });
+  }
+
+  return jwt.verify(token, 'shhhhh', (err, decoded) => {
+    if (err) {
+      return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+    }
+
+    return res.status(200).send(`Hola: ${JSON.stringify(decoded)}`);
+  });
+};
+
+module.exports = { addUser, signUp, me };
