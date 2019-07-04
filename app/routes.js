@@ -8,7 +8,7 @@ const {
   showPhotoFromAlbumByIds
 } = require('./controllers/albumsController');
 const { showAllPhotos, showPhotoById } = require('./controllers/photosController');
-const { addUser } = require('./controllers/usersController');
+const { addUser, signUp } = require('./controllers/usersController');
 const { validation } = require('./middlewares/validations');
 const { healthCheck } = require('./controllers/healthCheck');
 
@@ -31,5 +31,6 @@ albumsRouter.get('/:idAlbum/photos/:idPhoto', showPhotoFromAlbumByIds);
 const usersRouter = express.Router();
 
 usersRouter.post('/', validation, addUser);
+usersRouter.post('/sessions', signUp);
 
 module.exports = { albumsRouter, photosRouter, usersRouter, init };
