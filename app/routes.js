@@ -9,7 +9,7 @@ const {
 } = require('./controllers/albumsController');
 const { showAllPhotos, showPhotoById } = require('./controllers/photosController');
 const { addUser } = require('./controllers/usersController');
-const { validation } = require('./middlewares/validations');
+const { validation } = require('./middlewares/users/validations');
 const { healthCheck } = require('./controllers/healthCheck');
 
 const init = app => {

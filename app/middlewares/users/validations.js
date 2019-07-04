@@ -1,5 +1,5 @@
-const { validate } = require('../validators/users');
-const logger = require('../logger/index');
+const { validate } = require('../../validators/users');
+const logger = require('../../logger/index');
 
 const validation = (req, res, next) => {
   const user = req.body;
