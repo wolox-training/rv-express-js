@@ -33,13 +33,23 @@ const addUser = (req, res) => {
     });
 };
 
-const signUp = (req, res) => {
+const signIn = (req, res) => {
   const { email, password } = req.body;
+
+  if (email === undefined) {
+    logger.info('No input email!');
+    return res.status(400).send('No input email!');
+  }
+
+  if (password === undefined) {
+    logger.info('No input password!');
+    return res.status(400).send('No input password!');
+  }
 
   return obtainAllUsers({ where: { email } }).then(result => {
     if (!isEmailValid(email)) {
       logger.info(`The email: ${email} is not a valid WOLOX email.`);
-      return res.status(500).send(`The email: ${email} is not a valid WOLOX email.`);
+      return res.status(200).send(`The email: ${email} is not a valid WOLOX email.`);
     }
 
     if (result[0] === undefined) {
@@ -49,7 +59,7 @@ const signUp = (req, res) => {
 
     if (!checkPassword(password, result[0].password)) {
       logger.info(`The password for the user with the email: ${email} was wrong.`);
-      return res.status(500).send(`The password for the user with the email: ${email} was wrong.`);
+      return res.status(200).send(`The password for the user with the email: ${email} was wrong.`);
     }
 
     const token = jwt.sign(
@@ -82,4 +92,4 @@ const me = (req, res) => {
   });
 };
 
-module.exports = { addUser, signUp, me };
+module.exports = { addUser, signIn, me };
