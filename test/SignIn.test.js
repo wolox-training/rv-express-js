@@ -12,13 +12,11 @@ describe('Sign In endpoint test', () => {
       password: undefined
     };
 
-    await request(app)
+    const response = await request(app)
       .post('/users/sessions')
-      .send(userCredentials)
-      .then(response => {
-        expect(response.statusCode).toBe(400);
-        expect(response.text).toBe('No input email!');
-      });
+      .send(userCredentials);
+    expect(response.statusCode).toBe(400);
+    expect(response.text).toBe('No input email!');
   });
 
   it('should return no input password', async () => {
@@ -27,13 +25,11 @@ describe('Sign In endpoint test', () => {
       password: undefined
     };
 
-    await request(app)
+    const response = await request(app)
       .post('/users/sessions')
-      .send(userCredentials)
-      .then(response => {
-        expect(response.statusCode).toBe(400);
-        expect(response.text).toBe('No input password!');
-      });
+      .send(userCredentials);
+    expect(response.statusCode).toBe(400);
+    expect(response.text).toBe('No input password!');
   });
 
   it('should return not a valid WOLOX email', async () => {
@@ -42,13 +38,11 @@ describe('Sign In endpoint test', () => {
       password: 'password99'
     };
 
-    await request(app)
+    const response = await request(app)
       .post('/users/sessions')
-      .send(userCredentials)
-      .then(response => {
-        expect(response.statusCode).toBe(200);
-        expect(response.text).toBe(`The email: ${userCredentials.email} is not a valid WOLOX email.`);
-      });
+      .send(userCredentials);
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toBe(`The email: ${userCredentials.email} is not a valid WOLOX email.`);
   });
 
   it('should return email not registered', async () => {
@@ -57,13 +51,11 @@ describe('Sign In endpoint test', () => {
       password: 'password99'
     };
 
-    await request(app)
+    const response = await request(app)
       .post('/users/sessions')
-      .send(userCredentials)
-      .then(response => {
-        expect(response.statusCode).toBe(500);
-        expect(response.text).toBe(`The email: ${userCredentials.email} is not registered.`);
-      });
+      .send(userCredentials);
+    expect(response.statusCode).toBe(500);
+    expect(response.text).toBe(`The email: ${userCredentials.email} is not registered.`);
   });
 
   it('should return the password was wrong', async () => {
@@ -79,23 +71,19 @@ describe('Sign In endpoint test', () => {
       password: 'password991'
     };
 
-    await request(app)
+    const response = await request(app)
       .post('/users')
-      .send(user)
-      .then(response => {
-        expect(response.statusCode).toBe(200);
-        expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} was successfully created.`);
-      });
+      .send(user);
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} was successfully created.`);
 
-    await request(app)
+    const response2 = await request(app)
       .post('/users/sessions')
-      .send(userCredentials)
-      .then(response => {
-        expect(response.statusCode).toBe(200);
-        expect(response.text).toBe(
-          `The password for the user with the email: ${userCredentials.email} was wrong.`
-        );
-      });
+      .send(userCredentials);
+    expect(response2.statusCode).toBe(200);
+    expect(response2.text).toBe(
+      `The password for the user with the email: ${userCredentials.email} was wrong.`
+    );
   });
 
   it('should return the token', async () => {
@@ -111,21 +99,17 @@ describe('Sign In endpoint test', () => {
       password: 'password99'
     };
 
-    await request(app)
+    const response = await request(app)
       .post('/users')
-      .send(user)
-      .then(response => {
-        expect(response.statusCode).toBe(200);
-        expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} was successfully created.`);
-      });
+      .send(user);
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} was successfully created.`);
 
-    await request(app)
+    const response2 = await request(app)
       .post('/users/sessions')
-      .send(userCredentials)
-      .then(response => {
-        expect(response.statusCode).toBe(200);
-        expect(JSON.parse(response.text).auth).toBe(true);
-        expect(jwt.verify(JSON.parse(response.text).token, 'shhhhh').email).toBe(user.email);
-      });
+      .send(userCredentials);
+    expect(response2.statusCode).toBe(200);
+    expect(JSON.parse(response2.text).auth).toBe(true);
+    expect(jwt.verify(JSON.parse(response2.text).token, 'shhhhh').email).toBe(user.email);
   });
 });
