@@ -96,17 +96,12 @@ const listUsers = (req, res) => {
     logger.info('The user is authenticated');
 
     return obtainAllUsers().then(result2 => {
-      if (result2[0] === undefined) {
-        logger.info('No users registered');
-        return res.status(500).send('No users registered');
-      }
-
       if (page === undefined || limit === undefined) {
         return res.status(200).send(result2[0]);
       }
 
       if (isNaN(page) || isNaN(limit) || page < 0 || limit <= 0) {
-        return res.status(200).send('Invalid value');
+        return res.status(200).send('Invalid query value');
       }
 
       logger.info(result2.slice(limit * page, limit * (parseInt(page) + 1)));
