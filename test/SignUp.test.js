@@ -15,13 +15,11 @@ describe('Sign Up endpoint test', () => {
       password: 'password99'
     };
 
-    await request(app)
+    const response = await request(app)
       .post('/users')
-      .send(user)
-      .then(response => {
-        expect(response.statusCode).toBe(200);
-        expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} was successfully created.`);
-      });
+      .send(user);
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} was successfully created.`);
 
     const userResult = await obtainAllUsers({ where: { email: user.email } });
     expect(userResult[0].email).toBe(user.email);
@@ -35,15 +33,13 @@ describe('Sign Up endpoint test', () => {
       password: 'passw'
     };
 
-    await request(app)
+    const response = await request(app)
       .post('/users/')
-      .send(user)
-      .then(response => {
-        expect(response.statusCode).toBe(500);
-        expect(response.text).toBe(
-          `{\"error\":\"The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: Password too short!\"}`
-        );
-      });
+      .send(user);
+    expect(response.statusCode).toBe(500);
+    expect(response.text).toBe(
+      `{\"error\":\"The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: Password too short!\"}`
+    );
   });
 
   it('should return password not alphanumeric', async () => {
@@ -54,15 +50,13 @@ describe('Sign Up endpoint test', () => {
       password: 'pass!word99'
     };
 
-    await request(app)
+    const response = await request(app)
       .post('/users/')
-      .send(user)
-      .then(response => {
-        expect(response.statusCode).toBe(500);
-        expect(response.text).toBe(
-          `{\"error\":\"The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: Password is not alphanumeric!\"}`
-        );
-      });
+      .send(user);
+    expect(response.statusCode).toBe(500);
+    expect(response.text).toBe(
+      `{\"error\":\"The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: Password is not alphanumeric!\"}`
+    );
   });
 
   it('should return email not valid', async () => {
@@ -73,14 +67,12 @@ describe('Sign Up endpoint test', () => {
       password: 'password99'
     };
 
-    await request(app)
+    const response = await request(app)
       .post('/users/')
-      .send(user)
-      .then(response => {
-        expect(response.statusCode).toBe(500);
-        expect(response.text).toBe(
-          `{\"error\":\"The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: Email not valid!\"}`
-        );
-      });
+      .send(user);
+    expect(response.statusCode).toBe(500);
+    expect(response.text).toBe(
+      `{\"error\":\"The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: Email not valid!\"}`
+    );
   });
 });
