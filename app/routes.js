@@ -9,7 +9,7 @@ const {
 } = require('./controllers/albumsController');
 const { showAllPhotos, showPhotoById } = require('./controllers/photosController');
 
-const { addUser, signIn } = require('./controllers/usersController');
+const { addUser, signIn, listUsers } = require('./controllers/usersController');
 const { validation } = require('./middlewares/users/validations');
 
 const { healthCheck } = require('./controllers/healthCheck');
@@ -34,5 +34,6 @@ const usersRouter = express.Router();
 
 usersRouter.post('/', validation, addUser);
 usersRouter.post('/sessions', signIn);
+usersRouter.get('/', listUsers);
 
 module.exports = { albumsRouter, photosRouter, usersRouter, init };
