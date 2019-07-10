@@ -87,8 +87,6 @@ const listUsers = (req, res) => {
     return res.status(500).send('The token was not given');
   }
 
-  console.log(`I print the mail from the input token: ${jwt.verify(token, 'shhhhh').email}`);
-
   return obtainAllUsers({ where: { email: jwt.verify(token, 'shhhhh').email } }).then(result => {
     if (result[0] === undefined) {
       logger.info('The user is not authenticated');
