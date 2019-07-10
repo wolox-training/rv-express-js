@@ -1,10 +1,20 @@
 const app = require('../app');
 const request = require('supertest');
 const { cleanDB } = require('../app/services/users');
-const jwt = require('jsonwebtoken');
+
+const { factory } = require('factory-girl');
+const { User } = require('../app/models');
+const { signToken } = require('../app/helpers/token');
 
 describe('List Users endpoint test', () => {
   afterEach(() => cleanDB());
+
+  factory.define('User', User, {
+    firstName: factory.chance('name', { middle: true }),
+    lastName: factory.chance('name'),
+    email: factory.sequence('user.email', n => `dummy-user-${n}@wolox.com.ar`),
+    password: factory.chance('word', { length: 8 })
+  });
 
   it('should return the token was not given', async () => {
     const body = {
@@ -21,10 +31,12 @@ describe('List Users endpoint test', () => {
   });
 
   it('should return the user is not authenticated', async () => {
+    const newUser = await factory.build('User');
+    const user = newUser.dataValues;
+    const token = signToken(user.email);
+
     const body = {
-      access_token:
-        // eslint-disable-next-line max-len
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNhcnBhemFAd29sb3guY29tLmFyIiwiaWF0IjoxNTYyMzYwMTQ2fQ.paL_6LPAcb6FNKWWjhDIC2KGnu39quJ53Yre2gQrqvg'
+      access_token: token
     };
 
     const response = await request(app)
@@ -37,71 +49,44 @@ describe('List Users endpoint test', () => {
   });
 
   it('should return the first entry of the DB', async () => {
-    const firstName = 'rodrigo';
-    const lastName = 'videla';
-    const email = 'carpaza@wolox.com.ar';
-    const password = 'password99';
+    const newUser = await factory.build('User');
+    const user = newUser.dataValues;
+    const token = signToken(user.email);
 
-    const user = {
-      firstName,
-      lastName,
-      email,
-      password
-    };
-
-    const userCredentials = {
-      email,
-      password
+    const body = {
+      access_token: token
     };
 
     const response = await request(app)
       .post('/users')
       .send(user);
-    expect(response.statusCode).toBe(200);
     expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} was successfully created.`);
+    expect(response.statusCode).toBe(200);
 
     const response2 = await request(app)
-      .post('/users/sessions')
-      .send(userCredentials);
-    expect(response2.statusCode).toBe(200);
-    expect(JSON.parse(response2.text).auth).toBe(true);
-    expect(jwt.verify(JSON.parse(response2.text).token, 'shhhhh').email).toBe(user.email);
-
-    const body = {
-      access_token: JSON.parse(response2.text).token
-    };
-
-    expect(jwt.verify(body.access_token, 'shhhhh').email).toBe(user.email);
-
-    const response3 = await request(app)
       .get('/users')
       .query()
       .send(body);
-    expect(response3.statusCode).toBe(200);
-    expect(JSON.parse(response3.text).firstName).toBe(user.firstName);
-    expect(JSON.parse(response3.text).lastName).toBe(user.lastName);
-    expect(JSON.parse(response3.text).email).toBe(user.email);
+    expect(response2.statusCode).toBe(200);
+    expect(JSON.parse(response2.text).firstName).toBe(user.firstName);
+    expect(JSON.parse(response2.text).lastName).toBe(user.lastName);
+    expect(JSON.parse(response2.text).email).toBe(user.email);
   });
 
   it('should return invalid query value', async () => {
-    const user = {
-      firstName: 'rodrigo',
-      lastName: 'videla',
-      email: 'carpaza@wolox.com.ar',
-      password: 'password99'
-    };
+    const newUser = await factory.build('User');
+    const user = newUser.dataValues;
+    const token = signToken(user.email);
 
     const body = {
-      access_token:
-        // eslint-disable-next-line max-len
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNhcnBhemFAd29sb3guY29tLmFyIiwiaWF0IjoxNTYyMzYwMTQ2fQ.paL_6LPAcb6FNKWWjhDIC2KGnu39quJ53Yre2gQrqvg'
+      access_token: token
     };
 
     const response = await request(app)
       .post('/users')
       .send(user);
-    expect(response.statusCode).toBe(200);
     expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} was successfully created.`);
+    expect(response.statusCode).toBe(200);
 
     const response2 = await request(app)
       .get('/users')
@@ -112,17 +97,12 @@ describe('List Users endpoint test', () => {
   });
 
   it('should return success', async () => {
-    const user = {
-      firstName: 'rodrigo',
-      lastName: 'videla',
-      email: 'carpaza@wolox.com.ar',
-      password: 'password99'
-    };
+    const newUser = await factory.build('User');
+    const user = newUser.dataValues;
+    const token = signToken(user.email);
 
     const body = {
-      access_token:
-        // eslint-disable-next-line max-len
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNhcnBhemFAd29sb3guY29tLmFyIiwiaWF0IjoxNTYyMzYwMTQ2fQ.paL_6LPAcb6FNKWWjhDIC2KGnu39quJ53Yre2gQrqvg'
+      access_token: token
     };
 
     const response = await request(app)
@@ -139,32 +119,5 @@ describe('List Users endpoint test', () => {
     expect(JSON.parse(response2.text)[0].firstName).toBe(user.firstName);
     expect(JSON.parse(response2.text)[0].lastName).toBe(user.lastName);
     expect(JSON.parse(response2.text)[0].email).toBe(user.email);
-  });
-
-  it('should return the token', async () => {
-    const user = {
-      firstName: 'rodrigo',
-      lastName: 'videla',
-      email: 'rodrigo.videla@wolox.com.ar',
-      password: 'password99'
-    };
-
-    const userCredentials = {
-      email: 'rodrigo.videla@wolox.com.ar',
-      password: 'password99'
-    };
-
-    const response = await request(app)
-      .post('/users')
-      .send(user);
-    expect(response.statusCode).toBe(200);
-    expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} was successfully created.`);
-
-    const response2 = await request(app)
-      .post('/users/sessions')
-      .send(userCredentials);
-    expect(response2.statusCode).toBe(200);
-    expect(JSON.parse(response2.text).auth).toBe(true);
-    expect(jwt.verify(JSON.parse(response2.text).token, 'shhhhh').email).toBe(user.email);
   });
 });

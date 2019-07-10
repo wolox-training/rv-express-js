@@ -4,7 +4,7 @@ const { encryptPassword, checkPassword } = require('../helpers/encryption');
 const { obtainAllUsers } = require('../services/users');
 const { isEmailValid } = require('../validators/users');
 const logger = require('../logger/index');
-const jwt = require('jsonwebtoken');
+const { signToken, verifyToken } = require('../helpers/token');
 
 const addUser = (req, res) => {
   const { firstName, lastName, email } = req.body;
@@ -62,12 +62,8 @@ const signIn = (req, res) => {
       return res.status(200).send(`The password for the user with the email: ${email} was wrong.`);
     }
 
-    const token = jwt.sign(
-      {
-        email
-      },
-      'shhhhh'
-    );
+    const token = signToken(email);
+
     logger.info('Password OK, token sended.');
     return res.status(200).send({ auth: true, token });
   });
@@ -87,7 +83,7 @@ const listUsers = (req, res) => {
     return res.status(500).send('The token was not given');
   }
 
-  return obtainAllUsers({ where: { email: jwt.verify(token, 'shhhhh').email } }).then(result => {
+  return obtainAllUsers({ where: { email: verifyToken(token).email } }).then(result => {
     if (result[0] === undefined) {
       logger.info('The user is not authenticated');
       return res.status(500).send('The user is not authenticated');
