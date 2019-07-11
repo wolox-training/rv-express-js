@@ -58,7 +58,6 @@ const signIn = (req, res) => {
     }
 
     if (!checkPassword(password, result.password)) {
-      console.log(password, result.password);
       logger.info(`The password for the user with the email: ${email} was wrong.`);
       return res.status(400).send(`The password for the user with the email: ${email} was wrong.`);
     }
