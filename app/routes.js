@@ -10,7 +10,7 @@ const {
 const { showAllPhotos, showPhotoById } = require('./controllers/photosController');
 
 const { addUser, signIn, listUsers } = require('./controllers/usersController');
-const { validation } = require('./middlewares/users/validations');
+const { validation, validateIsOnDBList, validateIsOnDBSignIn } = require('./middlewares/users/validations');
 
 const { healthCheck } = require('./controllers/healthCheck');
 
@@ -33,7 +33,7 @@ albumsRouter.get('/:idAlbum/photos/:idPhoto', showPhotoFromAlbumByIds);
 const usersRouter = express.Router();
 
 usersRouter.post('/', validation, addUser);
-usersRouter.post('/sessions', signIn);
-usersRouter.get('/', listUsers);
+usersRouter.post('/sessions', validateIsOnDBSignIn, signIn);
+usersRouter.get('/', validateIsOnDBList, listUsers);
 
 module.exports = { albumsRouter, photosRouter, usersRouter, init };

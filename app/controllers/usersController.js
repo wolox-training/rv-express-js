@@ -1,10 +1,9 @@
 /* eslint-disable no-extra-parens */
 const { registerUser } = require('../services/users');
-const { encryptPassword, checkPassword } = require('../helpers/encryption');
-const { obtainAllUsers, obtainOneUser } = require('../services/users');
-const { isEmailValid } = require('../validators/users');
+const { encryptPassword } = require('../helpers/encryption');
+const { obtainAllUsers } = require('../services/users');
 const logger = require('../logger/index');
-const { signToken, verifyToken } = require('../helpers/token');
+const { signToken } = require('../helpers/token');
 
 const addUser = (req, res) => {
   const { firstName, lastName, email } = req.body;
@@ -34,76 +33,31 @@ const addUser = (req, res) => {
 };
 
 const signIn = (req, res) => {
-  const { email, password } = req.body;
+  const { email } = req.body;
 
-  if (!email) {
-    logger.info('No input email!');
-    return res.status(400).send('No input email!');
-  }
+  const token = signToken(email);
 
-  if (!password) {
-    logger.info('No input password!');
-    return res.status(400).send('No input password!');
-  }
-
-  return obtainOneUser({ where: { email } }).then(result => {
-    if (!isEmailValid(email)) {
-      logger.info(`The email: ${email} is not a valid WOLOX email.`);
-      return res.status(400).send(`The email: ${email} is not a valid WOLOX email.`);
-    }
-
-    if (!result) {
-      logger.info(`The email: ${email} is not registered.`);
-      return res.status(500).send(`The email: ${email} is not registered.`);
-    }
-
-    if (!checkPassword(password, result.password)) {
-      logger.info(`The password for the user with the email: ${email} was wrong.`);
-      return res.status(400).send(`The password for the user with the email: ${email} was wrong.`);
-    }
-
-    const token = signToken(email);
-
-    logger.info('Password OK, token sended.');
-    return res.status(200).send({ auth: true, token });
-  });
+  logger.info('Password OK, token sended.');
+  return res.status(200).send({ auth: true, token });
 };
 
-const listUsers = (req, res) => {
-  const token =
-    (req.body && req.body.access_token) ||
-    (req.query && req.query.access_token) ||
-    req.headers['x-access-token'];
-
+const listUsers = async (req, res) => {
   const { page } = req.query;
   const { limit } = req.query;
 
-  if (!token) {
-    logger.info('The token was not given');
-    return res.status(400).send('The token was not given');
+  logger.info('The user is authenticated');
+
+  const result2 = await obtainAllUsers();
+  if (!page || !limit) {
+    return res.status(200).send(result2[0]);
   }
 
-  return obtainOneUser({ where: { email: verifyToken(token).email } }).then(result => {
-    if (!result) {
-      logger.info('The user is not authenticated');
-      return res.status(500).send('The user is not authenticated');
-    }
+  if (isNaN(page) || isNaN(limit) || page < 0 || limit <= 0) {
+    return res.status(400).send('Invalid query value');
+  }
 
-    logger.info('The user is authenticated');
-
-    return obtainAllUsers().then(result2 => {
-      if (!page || !limit) {
-        return res.status(200).send(result2[0]);
-      }
-
-      if (isNaN(page) || isNaN(limit) || page < 0 || limit <= 0) {
-        return res.status(400).send('Invalid query value');
-      }
-
-      logger.info(result2.slice(limit * page, limit * (parseInt(page) + 1)));
-      return res.status(200).send(result2.slice(limit * page, limit * (parseInt(page) + 1)));
-    });
-  });
+  logger.info(result2.slice(limit * page, limit * (parseInt(page) + 1)));
+  return res.status(200).send(result2.slice(limit * page, limit * (parseInt(page) + 1)));
 };
 
 module.exports = { addUser, signIn, listUsers };

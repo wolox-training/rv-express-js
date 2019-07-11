@@ -86,17 +86,18 @@ describe('Sign In endpoint test', () => {
   });
 
   it('should return the password was wrong', async () => {
-    let mySuperPassword = 'mySuperPassword';
+    const mySuperPassword = 'mySuperPassword';
     const newUser = await factory.create2({ password: encryptPassword(mySuperPassword) });
     const user = newUser.dataValues;
 
     const { email } = user;
-
-    mySuperPassword += 'a';
+    let { password } = user;
+    password = mySuperPassword;
+    password += 'a';
 
     const userCredentials = {
       email,
-      mySuperPassword
+      password
     };
 
     const response = await request(app)
@@ -114,10 +115,12 @@ describe('Sign In endpoint test', () => {
     const user = newUser.dataValues;
 
     const { email } = user;
+    let { password } = user;
+    password = mySuperPassword;
 
     const userCredentials = {
       email,
-      mySuperPassword
+      password
     };
 
     const response = await request(app)
