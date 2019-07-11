@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-parens */
 const { registerUser } = require('../services/users');
 const { encryptPassword, checkPassword } = require('../helpers/encryption');
-const { obtainAllUsers } = require('../services/users');
+const { obtainAllUsers, obtainOneUser } = require('../services/users');
 const { isEmailValid } = require('../validators/users');
 const logger = require('../logger/index');
 const { signToken, verifyToken } = require('../helpers/token');
@@ -36,30 +36,31 @@ const addUser = (req, res) => {
 const signIn = (req, res) => {
   const { email, password } = req.body;
 
-  if (email === undefined) {
+  if (!email) {
     logger.info('No input email!');
     return res.status(400).send('No input email!');
   }
 
-  if (password === undefined) {
+  if (!password) {
     logger.info('No input password!');
     return res.status(400).send('No input password!');
   }
 
-  return obtainAllUsers({ where: { email } }).then(result => {
+  return obtainOneUser({ where: { email } }).then(result => {
     if (!isEmailValid(email)) {
       logger.info(`The email: ${email} is not a valid WOLOX email.`);
-      return res.status(200).send(`The email: ${email} is not a valid WOLOX email.`);
+      return res.status(400).send(`The email: ${email} is not a valid WOLOX email.`);
     }
 
-    if (result[0] === undefined) {
+    if (!result[0]) {
       logger.info(`The email: ${email} is not registered.`);
       return res.status(500).send(`The email: ${email} is not registered.`);
     }
 
     if (!checkPassword(password, result[0].password)) {
+      console.log(password, result[0].password);
       logger.info(`The password for the user with the email: ${email} was wrong.`);
-      return res.status(200).send(`The password for the user with the email: ${email} was wrong.`);
+      return res.status(400).send(`The password for the user with the email: ${email} was wrong.`);
     }
 
     const token = signToken(email);
@@ -78,13 +79,13 @@ const listUsers = (req, res) => {
   const { page } = req.query;
   const { limit } = req.query;
 
-  if (token === undefined) {
+  if (!token) {
     logger.info('The token was not given');
-    return res.status(500).send('The token was not given');
+    return res.status(400).send('The token was not given');
   }
 
-  return obtainAllUsers({ where: { email: verifyToken(token).email } }).then(result => {
-    if (result[0] === undefined) {
+  return obtainOneUser({ where: { email: verifyToken(token).email } }).then(result => {
+    if (!result[0]) {
       logger.info('The user is not authenticated');
       return res.status(500).send('The user is not authenticated');
     }
@@ -92,12 +93,12 @@ const listUsers = (req, res) => {
     logger.info('The user is authenticated');
 
     return obtainAllUsers().then(result2 => {
-      if (page === undefined || limit === undefined) {
+      if (!page || !limit) {
         return res.status(200).send(result2[0]);
       }
 
       if (isNaN(page) || isNaN(limit) || page < 0 || limit <= 0) {
-        return res.status(200).send('Invalid query value');
+        return res.status(400).send('Invalid query value');
       }
 
       logger.info(result2.slice(limit * page, limit * (parseInt(page) + 1)));

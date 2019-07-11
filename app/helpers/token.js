@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
-
-const secret = 'shhhhh';
+const { secret } = require('../../config/constants');
 
 const signToken = email =>
   jwt.sign(
@@ -10,6 +9,6 @@ const signToken = email =>
     secret
   );
 
-const verifyToken = token => jwt.verify(token, 'shhhhh');
+const verifyToken = token => jwt.verify(token, secret);
 
 module.exports = { signToken, verifyToken };
