@@ -23,7 +23,7 @@ const validation = (req, res, next) => {
   return next();
 };
 
-const validateIsOnDBList = async (req, res, next) => {
+const isAuthenticated = async (req, res, next) => {
   const token =
     (req.body && req.body.access_token) ||
     (req.query && req.query.access_token) ||
@@ -34,16 +34,18 @@ const validateIsOnDBList = async (req, res, next) => {
     return res.status(400).send('The token was not given');
   }
 
-  const result = await obtainOneUser({ where: { email: verifyToken(token).email } });
+  const user = await obtainOneUser({ where: { email: verifyToken(token).email } });
 
-  if (!result) {
+  if (!user) {
     logger.info('The user is not authenticated');
     return res.status(500).send('The user is not authenticated');
   }
+
+  logger.info('The user is authenticated');
   return next();
 };
 
-const validateIsOnDBSignIn = async (req, res, next) => {
+const isValid = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email) {
@@ -61,14 +63,14 @@ const validateIsOnDBSignIn = async (req, res, next) => {
     return res.status(400).send(`The email: ${email} is not a valid WOLOX email.`);
   }
 
-  const result = await obtainOneUser({ where: { email } });
+  const user = await obtainOneUser({ where: { email } });
 
-  if (!result) {
+  if (!user) {
     logger.info(`The email: ${email} is not registered.`);
     return res.status(500).send(`The email: ${email} is not registered.`);
   }
 
-  if (!checkPassword(password, result.password)) {
+  if (!checkPassword(password, user.password)) {
     logger.info(`The password for the user with the email: ${email} was wrong.`);
     return res.status(400).send(`The password for the user with the email: ${email} was wrong.`);
   }
@@ -76,4 +78,4 @@ const validateIsOnDBSignIn = async (req, res, next) => {
   return next();
 };
 
-module.exports = { validation, validateIsOnDBList, validateIsOnDBSignIn };
+module.exports = { validation, isAuthenticated, isValid };

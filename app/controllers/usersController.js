@@ -1,3 +1,4 @@
+/* eslint-disable curly */
 /* eslint-disable no-extra-parens */
 const { registerUser } = require('../services/users');
 const { encryptPassword } = require('../helpers/encryption');
@@ -42,22 +43,16 @@ const signIn = (req, res) => {
 };
 
 const listUsers = async (req, res) => {
-  const { page } = req.query;
-  const { limit } = req.query;
+  const { page, limit } = req.query;
 
-  logger.info('The user is authenticated');
+  const userList = await obtainAllUsers();
 
-  const result2 = await obtainAllUsers();
-  if (!page || !limit) {
-    return res.status(200).send(result2[0]);
-  }
+  if (!page || !limit) res.status(200).send(userList[0]);
 
-  if (isNaN(page) || isNaN(limit) || page < 0 || limit <= 0) {
-    return res.status(400).send('Invalid query value');
-  }
+  if (isNaN(page) || isNaN(limit) || page < 0 || limit <= 0) res.status(400).send('Invalid query value');
 
-  logger.info(result2.slice(limit * page, limit * (parseInt(page) + 1)));
-  return res.status(200).send(result2.slice(limit * page, limit * (parseInt(page) + 1)));
+  logger.info(userList.slice(limit * page, limit * (parseInt(page) + 1)));
+  return res.status(200).send(userList.slice(limit * page, limit * (parseInt(page) + 1)));
 };
 
 module.exports = { addUser, signIn, listUsers };

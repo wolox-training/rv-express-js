@@ -13,8 +13,7 @@ factory.define('User', User, {
 });
 
 const cleanUp = () => factory.cleanUp();
-const create1 = () => factory.create('User');
-const create2 = ({ password }) => {
+const create = ({ password }) => {
   const buildOptions = password ? { password } : undefined;
   return factory.create('User', buildOptions);
 };
@@ -22,4 +21,4 @@ const create2 = ({ password }) => {
 const createMany = () => factory.createMany('User', 5);
 const build = () => factory.build('User');
 
-module.exports = { cleanUp, create1, create2, createMany, build };
+module.exports = { cleanUp, create, createMany, build };
