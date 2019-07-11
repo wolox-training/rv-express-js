@@ -37,7 +37,7 @@ describe('List Users endpoint test', () => {
   });
 
   it('should return the first entry of the DB', async () => {
-    const newUser = await factory.create();
+    const newUser = await factory.create1();
     const user = newUser.dataValues;
     const token = signToken(user.email);
 
@@ -56,7 +56,7 @@ describe('List Users endpoint test', () => {
   });
 
   it('should return invalid query value', async () => {
-    const newUser = await factory.create();
+    const newUser = await factory.create1();
     const user = newUser.dataValues;
     const token = signToken(user.email);
 
@@ -73,7 +73,7 @@ describe('List Users endpoint test', () => {
   });
 
   it('should return success', async () => {
-    const newUser = await factory.create();
+    const newUser = await factory.create1();
     const user = newUser.dataValues;
     const token = signToken(user.email);
 

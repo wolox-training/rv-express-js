@@ -52,13 +52,13 @@ const signIn = (req, res) => {
       return res.status(400).send(`The email: ${email} is not a valid WOLOX email.`);
     }
 
-    if (!result[0]) {
+    if (!result) {
       logger.info(`The email: ${email} is not registered.`);
       return res.status(500).send(`The email: ${email} is not registered.`);
     }
 
-    if (!checkPassword(password, result[0].password)) {
-      console.log(password, result[0].password);
+    if (!checkPassword(password, result.password)) {
+      console.log(password, result.password);
       logger.info(`The password for the user with the email: ${email} was wrong.`);
       return res.status(400).send(`The password for the user with the email: ${email} was wrong.`);
     }
@@ -85,7 +85,7 @@ const listUsers = (req, res) => {
   }
 
   return obtainOneUser({ where: { email: verifyToken(token).email } }).then(result => {
-    if (!result[0]) {
+    if (!result) {
       logger.info('The user is not authenticated');
       return res.status(500).send('The user is not authenticated');
     }

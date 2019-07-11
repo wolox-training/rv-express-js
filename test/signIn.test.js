@@ -86,23 +86,18 @@ describe('Sign In endpoint test', () => {
   });
 
   it('should return the password was wrong', async () => {
-    const newUser = await factory.create();
+    let mySuperPassword = 'mySuperPassword';
+    const newUser = await factory.create2({ password: encryptPassword(mySuperPassword) });
     const user = newUser.dataValues;
 
-    console.log(user);
-
     const { email } = user;
-    let { password } = user;
 
-    password += 'asDD';
-    password = encryptPassword(password);
+    mySuperPassword += 'a';
 
     const userCredentials = {
       email,
-      password
+      mySuperPassword
     };
-
-    console.log(userCredentials);
 
     const response = await request(app)
       .post('/users/sessions')
@@ -114,27 +109,20 @@ describe('Sign In endpoint test', () => {
   });
 
   it('should return the token', async () => {
-    const newUser = await factory.create();
+    const mySuperPassword = 'mySuperPassword';
+    const newUser = await factory.create2({ password: encryptPassword(mySuperPassword) });
     const user = newUser.dataValues;
 
-    console.log(user);
-
     const { email } = user;
-    let { password } = user;
-
-    password = encryptPassword(password);
 
     const userCredentials = {
       email,
-      password
+      mySuperPassword
     };
-
-    console.log(userCredentials);
 
     const response = await request(app)
       .post('/users/sessions')
       .send(userCredentials);
-    expect(response).toBe('hola');
     expect(JSON.parse(response.text).auth).toBe(true);
     expect(verifyToken(JSON.parse(response.text).token).email).toBe(user.email);
     expect(response.statusCode).toBe(200);
