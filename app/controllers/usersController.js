@@ -67,13 +67,14 @@ const addAdminUser = (req, res) => {
   return upsertOneUser(user, { where: { email } })
     .then(result => {
       logger.info(
-        `The user ${user.firstName} ${user.lastName} was successfully created as ${
+        `The user ${user.firstName} ${user.lastName} was successfully ${result ? 'created' : 'updated'} as ${
           user.privilegeLevel
-        } ${JSON.stringify(result)}
-        `
+        }`
       );
       res.send(
-        `The user ${user.firstName} ${user.lastName} was successfully created as ${user.privilegeLevel}`
+        `The user ${user.firstName} ${user.lastName} was successfully ${result ? 'created' : 'updated'} as ${
+          user.privilegeLevel
+        }`
       );
     })
     .catch(error => {

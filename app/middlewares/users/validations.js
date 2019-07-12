@@ -74,7 +74,7 @@ const isAuthenticatedAsAdmin = async (req, res, next) => {
   return next();
 };
 
-const isValid = async (req, res, next) => {
+const isInputValid = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email) {
@@ -91,6 +91,11 @@ const isValid = async (req, res, next) => {
     logger.info(`The email: ${email} is not a valid WOLOX email.`);
     return res.status(400).send(`The email: ${email} is not a valid WOLOX email.`);
   }
+  return next();
+};
+
+const isLoginValid = async (req, res, next) => {
+  const { email, password } = req.body;
 
   const user = await obtainOneUser({ where: { email } });
 
@@ -107,4 +112,4 @@ const isValid = async (req, res, next) => {
   return next();
 };
 
-module.exports = { validation, isAuthenticated, isAuthenticatedAsAdmin, isValid };
+module.exports = { validation, isAuthenticated, isAuthenticatedAsAdmin, isInputValid, isLoginValid };
