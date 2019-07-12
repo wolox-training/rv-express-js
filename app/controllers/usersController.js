@@ -47,9 +47,10 @@ const listUsers = async (req, res) => {
 
   const userList = await obtainAllUsers();
 
-  if (!page || !limit) res.status(200).send(userList[0]);
+  if (!page || !limit) return res.status(200).send(userList[0]);
 
-  if (isNaN(page) || isNaN(limit) || page < 0 || limit <= 0) res.status(400).send('Invalid query value');
+  if (isNaN(page) || isNaN(limit) || page < 0 || limit <= 0)
+    return res.status(400).send('Invalid query value');
 
   logger.info(userList.slice(limit * page, limit * (parseInt(page) + 1)));
   return res.status(200).send(userList.slice(limit * page, limit * (parseInt(page) + 1)));

@@ -87,7 +87,7 @@ describe('Sign In endpoint test', () => {
 
   it('should return the password was wrong', async () => {
     const mySuperPassword = 'mySuperPassword';
-    const newUser = await factory.create2({ password: encryptPassword(mySuperPassword) });
+    const newUser = await factory.create({ password: encryptPassword(mySuperPassword) });
     const user = newUser.dataValues;
 
     const { email } = user;
@@ -111,7 +111,7 @@ describe('Sign In endpoint test', () => {
 
   it('should return the token', async () => {
     const mySuperPassword = 'mySuperPassword';
-    const newUser = await factory.create2({ password: encryptPassword(mySuperPassword) });
+    const newUser = await factory.create({ password: encryptPassword(mySuperPassword) });
     const user = newUser.dataValues;
 
     const { email } = user;
