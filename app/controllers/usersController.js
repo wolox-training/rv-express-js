@@ -9,10 +9,10 @@ const { signToken } = require('../helpers/token');
 const addUser = (req, res) => {
   const { firstName, lastName, email } = req.body;
   let { password } = req.body;
-
+  const privilegeLevel = 'normal';
   password = encryptPassword(password);
 
-  const user = { firstName, lastName, email, password };
+  const user = { firstName, lastName, email, password, privilegeLevel };
 
   return registerUser(user)
     .then(result => {
@@ -56,4 +56,35 @@ const listUsers = async (req, res) => {
   return res.status(200).send(userList.slice(limit * page, limit * (parseInt(page) + 1)));
 };
 
-module.exports = { addUser, signIn, listUsers };
+const addAdminUser = (req, res) => {
+  const { firstName, lastName, email } = req.body;
+  let { password } = req.body;
+  const privilegeLevel = 'admin';
+  password = encryptPassword(password);
+
+  const user = { firstName, lastName, email, password, privilegeLevel };
+
+  return registerUser(user)
+    .then(result => {
+      logger.info(
+        `The user ${user.firstName} ${user.lastName} was successfully created ${JSON.stringify(result)} as ${
+          user.privilegeLevel
+        }`
+      );
+      res.send(
+        `The user ${user.firstName} ${user.lastName} was successfully created. as ${user.privilegeLevel}`
+      );
+    })
+    .catch(error => {
+      logger.error(
+        `There were errors when adding the user ${user.firstName} ${user.lastName}: ${JSON.stringify(error)}`
+      );
+      res.status(500).send({
+        error: `There were errors when adding the user ${user.firstName} ${user.lastName}: ${JSON.stringify(
+          error
+        )}`
+      });
+    });
+};
+
+module.exports = { addUser, signIn, listUsers, addAdminUser };

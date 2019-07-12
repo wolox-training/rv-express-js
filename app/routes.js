@@ -36,4 +36,7 @@ usersRouter.post('/', validation, addUser);
 usersRouter.post('/sessions', isValid, signIn);
 usersRouter.get('/', isAuthenticated, listUsers);
 
-module.exports = { albumsRouter, photosRouter, usersRouter, init };
+const adminRouter = express.Router();
+usersRouter.post('/users', validation, addUser);
+
+module.exports = { albumsRouter, photosRouter, usersRouter, adminRouter, init };
