@@ -1,3 +1,4 @@
+/* eslint-disable curly */
 const { factory } = require('factory-girl');
 const faker = require('faker');
 const { User } = require('../../app/models');
@@ -12,8 +13,11 @@ factory.define('User', User, {
 });
 
 const cleanUp = () => factory.cleanUp();
-const create = ({ password }) => {
-  const buildOptions = password ? { password } : undefined;
+
+const create = ({ password, privilegeLevel }) => {
+  const buildOptions = {};
+  if (password) buildOptions.password = password;
+  if (privilegeLevel) buildOptions.privilegeLevel = privilegeLevel;
   return factory.create('User', buildOptions);
 };
 

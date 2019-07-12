@@ -64,13 +64,11 @@ const isAuthenticatedAsAdmin = async (req, res, next) => {
   }
 
   if (user.privilegeLevel !== 'admin') {
-    if (!user) {
-      logger.info('The user is not authenticated as Admin');
-      return res.status(500).send('The user is not authenticated as Admin');
-    }
+    logger.info(`The user ${user.firstName} ${user.lastName} is not authenticated as Admin`);
+    return res.status(500).send(`The user ${user.firstName} ${user.lastName} is not authenticated as Admin`);
   }
 
-  logger.info('The user is authenticated as Admin');
+  logger.info(`The user ${user.firstName} ${user.lastName} is authenticated as Admin`);
   return next();
 };
 
