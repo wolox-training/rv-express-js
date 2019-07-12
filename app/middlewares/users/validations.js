@@ -45,6 +45,35 @@ const isAuthenticated = async (req, res, next) => {
   return next();
 };
 
+const isAuthenticatedAsAdmin = async (req, res, next) => {
+  const token =
+    (req.body && req.body.access_token) ||
+    (req.query && req.query.access_token) ||
+    req.headers['x-access-token'];
+
+  if (!token) {
+    logger.info('The token was not given');
+    return res.status(400).send('The token was not given');
+  }
+
+  const user = await obtainOneUser({ where: { email: verifyToken(token).email } });
+
+  if (!user) {
+    logger.info('The user is not authenticated');
+    return res.status(500).send('The user is not authenticated');
+  }
+
+  if (user.privilegeLevel !== 'admin') {
+    if (!user) {
+      logger.info('The user is not authenticated as Admin');
+      return res.status(500).send('The user is not authenticated as Admin');
+    }
+  }
+
+  logger.info('The user is authenticated as Admin');
+  return next();
+};
+
 const isValid = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -78,4 +107,4 @@ const isValid = async (req, res, next) => {
   return next();
 };
 
-module.exports = { validation, isAuthenticated, isValid };
+module.exports = { validation, isAuthenticated, isAuthenticatedAsAdmin, isValid };

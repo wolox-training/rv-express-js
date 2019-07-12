@@ -2,7 +2,7 @@
 /* eslint-disable no-extra-parens */
 const { registerUser } = require('../services/users');
 const { encryptPassword } = require('../helpers/encryption');
-const { obtainAllUsers } = require('../services/users');
+const { obtainAllUsers, upsertOneUser } = require('../services/users');
 const logger = require('../logger/index');
 const { signToken } = require('../helpers/token');
 
@@ -64,15 +64,16 @@ const addAdminUser = (req, res) => {
 
   const user = { firstName, lastName, email, password, privilegeLevel };
 
-  return registerUser(user)
+  return upsertOneUser(user, { where: { email } })
     .then(result => {
       logger.info(
-        `The user ${user.firstName} ${user.lastName} was successfully created ${JSON.stringify(result)} as ${
+        `The user ${user.firstName} ${user.lastName} was successfully created as ${
           user.privilegeLevel
-        }`
+        } ${JSON.stringify(result)}
+        `
       );
       res.send(
-        `The user ${user.firstName} ${user.lastName} was successfully created. as ${user.privilegeLevel}`
+        `The user ${user.firstName} ${user.lastName} was successfully created as ${user.privilegeLevel}`
       );
     })
     .catch(error => {

@@ -14,7 +14,7 @@ module.exports = {
           last_name: 'Doe',
           email: 'john.doe@wolox.com.ar',
           password: encryptPassword(mySuperPassword),
-          privilegeLevel: 'admin',
+          privilege_level: 'admin',
           createdAt: '2016-06-22 19:10:25-07',
           updatedAt: '2016-06-22 19:10:25-07'
         }

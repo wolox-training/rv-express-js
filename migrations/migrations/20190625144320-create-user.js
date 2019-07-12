@@ -30,7 +30,8 @@ module.exports = {
       },
       privilegeLevel: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        field: 'privilege_level'
       },
       createdAt: {
         allowNull: false,

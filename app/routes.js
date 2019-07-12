@@ -10,7 +10,12 @@ const {
 const { showAllPhotos, showPhotoById } = require('./controllers/photosController');
 
 const { addUser, signIn, listUsers, addAdminUser } = require('./controllers/usersController');
-const { validation, isAuthenticated, isValid } = require('./middlewares/users/validations');
+const {
+  validation,
+  isAuthenticated,
+  isAuthenticatedAsAdmin,
+  isValid
+} = require('./middlewares/users/validations');
 
 const { healthCheck } = require('./controllers/healthCheck');
 
@@ -37,6 +42,6 @@ usersRouter.post('/sessions', isValid, signIn);
 usersRouter.get('/', isAuthenticated, listUsers);
 
 const adminRouter = express.Router();
-adminRouter.post('/users', validation, addAdminUser);
+adminRouter.post('/users', isAuthenticatedAsAdmin, addAdminUser);
 
 module.exports = { albumsRouter, photosRouter, usersRouter, adminRouter, init };
