@@ -4,7 +4,7 @@ const { encryptPassword } = require('../app/helpers/encryption');
 const mySuperPassword = 'mySuperPassword';
 
 module.exports = {
-  up: (queryInterface, Sequelize) =>
+  up: queryInterface =>
     queryInterface.bulkInsert(
       'users',
       [
@@ -22,5 +22,5 @@ module.exports = {
       {}
     ),
 
-  down: (queryInterface, Sequelize) => queryInterface.bulkDelete('users')
+  down: queryInterface => queryInterface.bulkDelete('users')
 };
