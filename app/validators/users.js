@@ -4,7 +4,7 @@ const regexAlphanumeric = /^[a-zA-Z0-9]*$/;
 // eslint-disable-next-line no-useless-escape
 const regexValidEmail = /^([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)@wolox.com.ar$/;
 
-const isPasswordLenghtvalid = password => password.length > 8;
+const isPasswordLenghtvalid = password => password.length > 7;
 const isPasswordAlphanumeric = password => regexAlphanumeric.test(password);
 const isEmailValid = email => regexValidEmail.test(email);
 
@@ -19,4 +19,4 @@ const validate = user => {
   return { errors };
 };
 
-module.exports = { validate };
+module.exports = { validate, isEmailValid };

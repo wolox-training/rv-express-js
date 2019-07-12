@@ -5,4 +5,7 @@ const salt = bcrypt.genSaltSync(saltValue);
 
 const encryptPassword = password => bcrypt.hashSync(password, salt);
 
-module.exports = { encryptPassword };
+const checkPassword = (plaintextPassword, hashedPassword) =>
+  bcrypt.compareSync(plaintextPassword, hashedPassword);
+
+module.exports = { encryptPassword, checkPassword };
