@@ -50,4 +50,18 @@ const showPhotoFromAlbumByIds = (req, res) => {
     );
 };
 
-module.exports = { showAllAlbums, showAlbumById, showPhotosFromAlbum, showPhotoFromAlbumByIds };
+const buyAlbum = (req, res) => {
+  const { id } = req.params;
+  console.log(res, id);
+  // getPhotoFromAlbumByIds(idAlbum, idPhoto)
+  //   .then(result => res.send(result.body))
+  //   .catch(error =>
+  //     res.status(500).send({
+  //       error: `There were errors getting the photo ${idPhoto} from the Album ${idAlbum} ${JSON.stringify(
+  //         error
+  //       )}`
+  //     })
+  //   );
+};
+
+module.exports = { showAllAlbums, showAlbumById, showPhotosFromAlbum, showPhotoFromAlbumByIds, buyAlbum };

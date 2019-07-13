@@ -5,7 +5,8 @@ const {
   showAllAlbums,
   showAlbumById,
   showPhotosFromAlbum,
-  showPhotoFromAlbumByIds
+  showPhotoFromAlbumByIds,
+  buyAlbum
 } = require('./controllers/albumsController');
 const { showAllPhotos, showPhotoById } = require('./controllers/photosController');
 
@@ -35,6 +36,7 @@ albumsRouter.get('/', showAllAlbums);
 albumsRouter.get('/:id', showAlbumById);
 albumsRouter.get('/:id/photos/', showPhotosFromAlbum);
 albumsRouter.get('/:idAlbum/photos/:idPhoto', showPhotoFromAlbumByIds);
+albumsRouter.post('/:id', isAuthenticated, buyAlbum);
 
 const usersRouter = express.Router();
 usersRouter.post('/', isUserDataPresent, areCredentialsPresent, areCredentialsValid, addUser);
