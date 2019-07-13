@@ -25,24 +25,21 @@ const init = app => {
 };
 
 const photosRouter = express.Router();
-
 photosRouter.get('/', showAllPhotos);
 photosRouter.get('/:id', showPhotoById);
 
 const albumsRouter = express.Router();
-
 albumsRouter.get('/', showAllAlbums);
 albumsRouter.get('/:id', showAlbumById);
 albumsRouter.get('/:id/photos/', showPhotosFromAlbum);
 albumsRouter.get('/:idAlbum/photos/:idPhoto', showPhotoFromAlbumByIds);
 
 const usersRouter = express.Router();
-
 usersRouter.post('/', validation, addUser);
 usersRouter.post('/sessions', isInputValid, isLoginValid, signIn);
 usersRouter.get('/', isAuthenticated, listUsers);
 
 const adminRouter = express.Router();
-adminRouter.post('/users', isInputValid, isAuthenticatedAsAdmin, addAdminUser);
+adminRouter.post('/users', isInputValid, isAuthenticated, isAuthenticatedAsAdmin, addAdminUser);
 
 module.exports = { albumsRouter, photosRouter, usersRouter, adminRouter, init };
