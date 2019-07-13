@@ -11,6 +11,10 @@ describe('Admin user endpoint test', () => {
     const user = newUser.dataValues;
     const token = signToken(user.email);
 
+    user.firstName = 'carla';
+    user.lastName = 'maria';
+    user.password = '12345678';
+
     const query = {
       access_token: token
     };
@@ -33,7 +37,7 @@ describe('Admin user endpoint test', () => {
     user.firstName = 'carla';
     user.lastName = 'maria';
     user.email = 'maria@wolox.com.ar';
-    user.password = '1234';
+    user.password = '12345678';
 
     const query = {
       access_token: token

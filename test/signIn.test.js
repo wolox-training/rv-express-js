@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 const app = require('../app');
 const request = require('supertest');
 const factory = require('./factories/users');
@@ -24,8 +25,8 @@ describe('Sign In endpoint test', () => {
     const response = await request(app)
       .post('/users/sessions')
       .send(userCredentials);
-    expect(response.statusCode).toBe(400);
     expect(response.text).toBe('No input email!');
+    expect(response.statusCode).toBe(400);
   });
 
   it('should return no input password', async () => {
@@ -44,8 +45,8 @@ describe('Sign In endpoint test', () => {
     const response = await request(app)
       .post('/users/sessions')
       .send(userCredentials);
-    expect(response.statusCode).toBe(400);
     expect(response.text).toBe('No input password!');
+    expect(response.statusCode).toBe(400);
   });
 
   it('should return not a valid WOLOX email', async () => {
@@ -63,8 +64,8 @@ describe('Sign In endpoint test', () => {
     const response = await request(app)
       .post('/users/sessions')
       .send(userCredentials);
+    expect(response.text).toBe(`{\"error\":\"${user.email} is not a valid WOLOX email: Email not valid!\"}`);
     expect(response.statusCode).toBe(400);
-    expect(response.text).toBe(`The email: ${userCredentials.email} is not a valid WOLOX email.`);
   });
 
   it('should return email not registered', async () => {

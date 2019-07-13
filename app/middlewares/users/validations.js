@@ -1,16 +1,58 @@
 /* eslint-disable no-extra-parens */
-const { validate } = require('../../validators/users');
+const { validateEmailPassword, validateEmail } = require('../../validators/users');
 const logger = require('../../logger/index');
 
 const { obtainOneUser } = require('../../services/users');
 const { verifyToken } = require('../../helpers/token');
 
-const { isEmailValid } = require('../../validators/users');
 const { checkPassword } = require('../../helpers/encryption');
 
-const validation = (req, res, next) => {
+const isUserDataPresent = (req, res, next) => {
   const user = req.body;
-  const validationErrors = validate(user).errors;
+
+  if (!user.firstName) {
+    logger.info('No input first name!');
+    return res.status(400).send('No input first name!');
+  }
+
+  if (!user.lastName) {
+    logger.info('No input last name!');
+    return res.status(400).send('No input last name!');
+  }
+  return next();
+};
+
+const areCredentialsPresent = (req, res, next) => {
+  const user = req.body;
+
+  if (!user.email) {
+    logger.info('No input email!');
+    return res.status(400).send('No input email!');
+  }
+
+  if (!user.password) {
+    logger.info('No input password!');
+    return res.status(400).send('No input password!');
+  }
+  return next();
+};
+
+const isEmailValid = (req, res, next) => {
+  const user = req.body;
+  const validationErrors = validateEmail(user).errors;
+
+  if (validationErrors.length) {
+    logger.error(`${user.email} is not a valid WOLOX email: ${validationErrors}`);
+    return res.status(400).send({
+      error: `${user.email} is not a valid WOLOX email: ${validationErrors}`
+    });
+  }
+  return next();
+};
+
+const areCredentialsValid = (req, res, next) => {
+  const user = req.body;
+  const validationErrors = validateEmailPassword(user).errors;
 
   if (validationErrors.length) {
     logger.error(
@@ -19,26 +61,6 @@ const validation = (req, res, next) => {
     return res.status(500).send({
       error: `The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: ${validationErrors}`
     });
-  }
-  return next();
-};
-
-const isInputValid = (req, res, next) => {
-  const { email, password } = req.body;
-
-  if (!email) {
-    logger.info('No input email!');
-    return res.status(400).send('No input email!');
-  }
-
-  if (!password) {
-    logger.info('No input password!');
-    return res.status(400).send('No input password!');
-  }
-
-  if (!isEmailValid(email)) {
-    logger.info(`The email: ${email} is not a valid WOLOX email.`);
-    return res.status(400).send(`The email: ${email} is not a valid WOLOX email.`);
   }
   return next();
 };
@@ -100,4 +122,12 @@ const isAuthenticatedAsAdmin = async (req, res, next) => {
   return next();
 };
 
-module.exports = { validation, isAuthenticated, isAuthenticatedAsAdmin, isInputValid, isLoginValid };
+module.exports = {
+  isUserDataPresent,
+  areCredentialsPresent,
+  areCredentialsValid,
+  isEmailValid,
+  isLoginValid,
+  isAuthenticated,
+  isAuthenticatedAsAdmin
+};
