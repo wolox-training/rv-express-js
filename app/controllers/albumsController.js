@@ -10,7 +10,8 @@ const {
   getPhotosFromAlbum,
   getPhotoFromAlbumByIds,
   registerPurchase,
-  obtainOnePurchase
+  obtainOnePurchase,
+  obtainAllPurchases
 } = require('../services/albums');
 
 const showAllAlbums = (req, res) => {
@@ -100,4 +101,40 @@ const buyAlbum = async (req, res) => {
     });
 };
 
-module.exports = { showAllAlbums, showAlbumById, showPhotosFromAlbum, showPhotoFromAlbumByIds, buyAlbum };
+const listAlbumsFromUser = async (req, res) => {
+  const { user_id } = req.params;
+
+  const token =
+    (req.body && req.body.access_token) ||
+    (req.query && req.query.access_token) ||
+    req.headers['x-access-token'];
+
+  const newUser = await obtainOneUser({ where: { email: verifyToken(token).email } });
+  const user = newUser.dataValues;
+
+  if (user.privilegeLevel === 'normal' && user.id !== parseInt(user_id)) {
+    logger.info("This user cannot access these User's albums.");
+    return res.status(400).send("This user cannot access these User's albums.");
+  }
+
+  const purchases = await obtainAllPurchases({ where: { userId: user_id } });
+
+  const idsOfAlbums = purchases.map(element => element.dataValues.externalReferenceId);
+
+  if (!purchases) {
+    logger.info('The albums could not be obtained');
+    return res.status(400).send('The albums could not be obtained');
+  }
+
+  logger.info(`The user with the id: ${user_id} has the following albums: ${idsOfAlbums}`);
+  return res.status(400).send(`The user with the id: ${user_id} has the following albums: ${idsOfAlbums}`);
+};
+
+module.exports = {
+  showAllAlbums,
+  showAlbumById,
+  showPhotosFromAlbum,
+  showPhotoFromAlbumByIds,
+  buyAlbum,
+  listAlbumsFromUser
+};
