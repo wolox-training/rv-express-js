@@ -121,6 +121,14 @@ const listAlbumsFromUser = async (req, res) => {
 
   const idsOfAlbums = purchases.map(element => element.dataValues.externalReferenceId);
 
+  Promise.all(idsOfAlbums.map(result => getAlbumById(result)))
+    .then(result2 => result2.map(result3 => result3.body.title))
+    .then(result4 => console.log(result4));
+
+  // Promise.all(idsOfAlbums.map(result => getAlbumById(result))).then(res => {
+  //   console.log(res);
+  // });
+
   if (!purchases) {
     logger.info('The albums could not be obtained');
     return res.status(400).send('The albums could not be obtained');
