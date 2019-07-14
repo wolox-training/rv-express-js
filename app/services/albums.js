@@ -29,4 +29,18 @@ const getPhotoFromAlbumByIds = (idAlbum, idPhoto) =>
     json: true
   });
 
-module.exports = { getAllAlbums, getAlbumById, getPhotosFromAlbum, getPhotoFromAlbumByIds };
+const { UserAlbums } = require('../models');
+
+const obtainAllPurchases = parameters => UserAlbums.findAll(parameters);
+const obtainOnePurchase = parameters => UserAlbums.findOne(parameters);
+const registerPurchase = purchase => UserAlbums.create(purchase);
+
+module.exports = {
+  getAllAlbums,
+  getAlbumById,
+  getPhotosFromAlbum,
+  getPhotoFromAlbumByIds,
+  obtainAllPurchases,
+  obtainOnePurchase,
+  registerPurchase
+};

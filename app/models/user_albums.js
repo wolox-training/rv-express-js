@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       externalReferenceId: { type: DataTypes.INTEGER, allowNull: false, field: 'external_reference_id' }
     },
     {
-      tableName: 'users'
+      tableName: 'user_albums'
     }
   );
 
