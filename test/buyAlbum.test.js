@@ -4,7 +4,6 @@ const factory = require('./factories/users');
 const { albumsCleanUp, albumsCreate } = require('./factories/albums');
 const { signToken } = require('../app/helpers/token');
 const { getAlbumById } = require('../app/services/albums');
-const faker = require('faker');
 const nock = require('nock');
 
 const url = 'https://jsonplaceholder.typicode.com';
@@ -16,16 +15,7 @@ describe('Buy album test', () => {
   });
 
   it('should return album already purchased', async () => {
-    nock(`${url}albums`)
-      .get()
-      .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
-        'Content-Type': 'application/json'
-      });
-
-    const albumToBuy = faker.random.number({
-      min: 1,
-      max: 100
-    });
+    const albumToBuy = 88;
 
     const newUser = await factory.create({});
     const user = newUser.dataValues;
@@ -46,16 +36,14 @@ describe('Buy album test', () => {
   });
 
   it('should return album successfully purchased', async () => {
-    nock(`${url}albums`)
-      .get()
+    const albumToBuy = 76;
+
+    nock(url)
+      .persist()
+      .get(`/albums/${albumToBuy}`)
       .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
         'Content-Type': 'application/json'
       });
-
-    const albumToBuy = faker.random.number({
-      min: 1,
-      max: 100
-    });
 
     const newUser = await factory.create({});
     const user = newUser.dataValues;
@@ -79,16 +67,7 @@ describe('Buy album test', () => {
   });
 
   it('should return token not given', async () => {
-    nock(url)
-      .get('/albums')
-      .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
-        'Content-Type': 'application/json'
-      });
-
-    const albumToBuy = faker.random.number({
-      min: 1,
-      max: 100
-    });
+    const albumToBuy = 14;
 
     await factory.create({});
 
