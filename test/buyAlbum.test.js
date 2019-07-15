@@ -1,5 +1,3 @@
-process.env.ALBUMS_API_URL = 'https://jsonplaceholder.typicode.com';
-
 const app = require('../app');
 const request = require('supertest');
 const factory = require('./factories/users');
