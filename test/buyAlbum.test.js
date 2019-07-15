@@ -39,9 +39,11 @@ describe('Buy album test', () => {
 
     nock('https://jsonplaceholder.typicode.com')
       .persist()
-      .get(`/albums/${albumToBuy}`)
-      .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
-        'Content-Type': 'application/json'
+      .get('/albums/76')
+      .reply(200, {
+        userId: 8,
+        id: 76,
+        title: 'dolorem magnam facere itaque ut reprehenderit tenetur corrupti'
       });
 
     const newUser = await factory.create({});
