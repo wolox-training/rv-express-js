@@ -4,7 +4,7 @@ const factory = require('./factories/users');
 const { albumsCleanUp } = require('./factories/albums');
 // const { albumsCreate } = require('./factories/albums');
 const { signToken } = require('../app/helpers/token');
-const { getAlbumById } = require('../app/services/albums');
+// const { getAlbumById } = require('../app/services/albums');
 const nock = require('nock');
 
 describe('Buy album test', () => {
@@ -36,14 +36,15 @@ describe('Buy album test', () => {
 
   it('should return album successfully purchased', async () => {
     const albumToBuy = 76;
+    const albumName = 'dolorem magnam facere itaque ut reprehenderit tenetur corrupti';
 
     nock('https://jsonplaceholder.typicode.com')
       .persist()
       .get('/albums/76')
       .reply(200, {
         userId: 8,
-        id: 76,
-        title: 'dolorem magnam facere itaque ut reprehenderit tenetur corrupti'
+        id: albumToBuy,
+        title: albumName
       });
 
     const newUser = await factory.create({});
@@ -54,10 +55,6 @@ describe('Buy album test', () => {
     const query = {
       access_token: token
     };
-
-    const album = await getAlbumById(albumToBuy);
-    const albumName = album.body.title;
-
     const response = await request(app)
       .post(`/albums/${albumToBuy}`)
       .query(query);
