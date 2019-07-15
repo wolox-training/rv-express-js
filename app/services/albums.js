@@ -1,4 +1,5 @@
-const { ALBUMS_API_URL: url } = require('../../config/environment.js');
+// const { ALBUMS_API_URL: url } = require('../../config/environment.js');
+const url = 'https://jsonplaceholder.typicode.com';
 const { request } = require('../helpers/request');
 
 const getAllAlbums = () =>
