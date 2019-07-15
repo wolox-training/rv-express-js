@@ -7,8 +7,7 @@ const { getAlbumById } = require('../app/services/albums');
 const faker = require('faker');
 const nock = require('nock');
 
-// const { ALBUMS_API_URL: url } = require('../config/environment');
-const url = 'http://localhost:8081';
+const url = 'https://jsonplaceholder.typicode.com';
 
 describe('Buy album test', () => {
   beforeEach(() => {
@@ -17,8 +16,8 @@ describe('Buy album test', () => {
   });
 
   it('should return album already purchased', async () => {
-    nock(url)
-      .get('/albums')
+    nock(`${url}albums`)
+      .get()
       .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
         'Content-Type': 'application/json'
       });
@@ -47,8 +46,8 @@ describe('Buy album test', () => {
   });
 
   it('should return album successfully purchased', async () => {
-    nock(url)
-      .get('/albums')
+    nock(`${url}albums`)
+      .get()
       .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
         'Content-Type': 'application/json'
       });
