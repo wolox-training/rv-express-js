@@ -118,24 +118,53 @@ const listAlbumsFromUser = async (req, res) => {
   }
 
   const purchases = await obtainAllPurchases({ where: { userId: user_id } });
-
   const idsOfAlbums = purchases.map(element => element.dataValues.externalReferenceId);
-
-  Promise.all(idsOfAlbums.map(result => getAlbumById(result)))
-    .then(result2 => result2.map(result3 => result3.body.title))
-    .then(result4 => console.log(result4));
-
-  // Promise.all(idsOfAlbums.map(result => getAlbumById(result))).then(res => {
-  //   console.log(res);
-  // });
+  const albumsFromUser = await Promise.all(idsOfAlbums.map(result => getAlbumById(result)));
+  const titlesFromAlbumsFromUser = albumsFromUser.map(result => result.body.title);
 
   if (!purchases) {
     logger.info('The albums could not be obtained');
     return res.status(400).send('The albums could not be obtained');
   }
 
-  logger.info(`The user with the id: ${user_id} has the following albums: ${idsOfAlbums}`);
-  return res.status(400).send(`The user with the id: ${user_id} has the following albums: ${idsOfAlbums}`);
+  logger.info(`The user with the id: ${user_id} has the following albums: ${titlesFromAlbumsFromUser}`);
+  return res
+    .status(200)
+    .send(`The user with the id: ${user_id} has the following albums: ${titlesFromAlbumsFromUser}`);
+};
+
+const listPhotosFromAlbum = async (req, res) => {
+  const { album_id } = req.params;
+
+  const token =
+    (req.body && req.body.access_token) ||
+    (req.query && req.query.access_token) ||
+    req.headers['x-access-token'];
+
+  const userObject = await obtainOneUser({ where: { email: verifyToken(token).email } });
+  const user = userObject.dataValues;
+
+  const purchases = await obtainAllPurchases({ where: { userId: user.id } });
+  const idsOfAlbums = purchases.map(element => element.dataValues.externalReferenceId);
+
+  if (!idsOfAlbums.includes(parseInt(album_id))) {
+    logger.info(`The user with the id: ${user.id} has not bought the album ${album_id}.`);
+    return res.status(400).send(`The user with the id: ${user.id} not bought the album ${album_id}.`);
+  }
+
+  const photosFromAlbumObject = await getPhotosFromAlbum(album_id);
+
+  if (!photosFromAlbumObject) {
+    logger.info('The photos could not be obtained');
+    return res.status(400).send('The photos could not be obtained');
+  }
+
+  const linksToPhotosFromAlbum = photosFromAlbumObject.body.map(photoObject => photoObject.url);
+
+  logger.info(`The user with the id: ${user.id} has the following photos: ${linksToPhotosFromAlbum}`);
+  return res
+    .status(200)
+    .send(`The user with the id: ${user.id} has the following photos: ${linksToPhotosFromAlbum}`);
 };
 
 module.exports = {
@@ -144,5 +173,6 @@ module.exports = {
   showPhotosFromAlbum,
   showPhotoFromAlbumByIds,
   buyAlbum,
-  listAlbumsFromUser
+  listAlbumsFromUser,
+  listPhotosFromAlbum
 };
