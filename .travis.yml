@@ -7,6 +7,8 @@ sudo: true
 
 env:
   - CXX=g++-4.8 NODE_ENV=testing
+  - ALBUMS_API_URL = 'https://jsonplaceholder.typicode.com'
+
 addons:
   apt:
     sources:
@@ -24,6 +26,3 @@ before_script:
 script:
   - npm run lint
   - npm run test
-
-env:
-  - ALBUMS_API_URL = 'https://jsonplaceholder.typicode.com'
