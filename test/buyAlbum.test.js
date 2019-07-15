@@ -1,3 +1,5 @@
+process.env.url = 'https://jsonplaceholder.typicode.com';
+
 const app = require('../app');
 const request = require('supertest');
 const factory = require('./factories/users');
