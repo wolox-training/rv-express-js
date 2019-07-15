@@ -6,8 +6,6 @@ const { signToken } = require('../app/helpers/token');
 const { getAlbumById } = require('../app/services/albums');
 const nock = require('nock');
 
-const url = 'https://jsonplaceholder.typicode.com';
-
 describe('Buy album test', () => {
   beforeEach(() => {
     factory.cleanUp();
@@ -38,7 +36,7 @@ describe('Buy album test', () => {
   it('should return album successfully purchased', async () => {
     const albumToBuy = 76;
 
-    nock(url)
+    nock('https://jsonplaceholder.typicode.com')
       .persist()
       .get(`/albums/${albumToBuy}`)
       .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
