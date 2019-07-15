@@ -149,7 +149,7 @@ const listPhotosFromAlbum = async (req, res) => {
 
   if (!idsOfAlbums.includes(parseInt(album_id))) {
     logger.info(`The user with the id: ${user.id} has not bought the album ${album_id}.`);
-    return res.status(400).send(`The user with the id: ${user.id} not bought the album ${album_id}.`);
+    return res.status(400).send(`The user with the id: ${user.id} has not bought the album ${album_id}.`);
   }
 
   const photosFromAlbumObject = await getPhotosFromAlbum(album_id);

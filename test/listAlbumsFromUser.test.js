@@ -7,10 +7,7 @@ const faker = require('faker');
 const nock = require('nock');
 const { getAlbumById, obtainAllPurchases } = require('../app/services/albums');
 
-// probar que un usuario normal no puede acceder a albums de otro usuario
-// probar que un usuario normal puede acceder a sus albums
-
-describe.only('List albums from a user test', () => {
+describe('List albums from a user test', () => {
   beforeEach(() => {
     factory.cleanUp();
     albumsCleanUp();
