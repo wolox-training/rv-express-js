@@ -1,8 +1,7 @@
 /* eslint-disable no-extra-parens */
 /* eslint-disable new-cap */
 const logger = require('../logger/index');
-const { obtainOneUser } = require('../services/users');
-const { verifyToken } = require('../helpers/token');
+const { getUserFromToken } = require('../helpers/user');
 
 const {
   getAllAlbums,
@@ -65,8 +64,7 @@ const buyAlbum = async (req, res) => {
     (req.query && req.query.access_token) ||
     req.headers['x-access-token'];
 
-  const newUser = await obtainOneUser({ where: { email: verifyToken(token).email } });
-  const user = newUser.dataValues;
+  const user = getUserFromToken(token);
 
   const album = await getAlbumById(id);
 
@@ -109,8 +107,7 @@ const listAlbumsFromUser = async (req, res) => {
     (req.query && req.query.access_token) ||
     req.headers['x-access-token'];
 
-  const newUser = await obtainOneUser({ where: { email: verifyToken(token).email } });
-  const user = newUser.dataValues;
+  const user = getUserFromToken(token);
 
   if (user.privilegeLevel === 'normal' && user.id !== parseInt(user_id)) {
     logger.info("This user cannot access these User's albums.");
@@ -141,8 +138,7 @@ const listPhotosFromAlbum = async (req, res) => {
     (req.query && req.query.access_token) ||
     req.headers['x-access-token'];
 
-  const userObject = await obtainOneUser({ where: { email: verifyToken(token).email } });
-  const user = userObject.dataValues;
+  const user = getUserFromToken(token);
 
   const purchases = await obtainAllPurchases({ where: { userId: user.id } });
   const idsOfAlbums = purchases.map(element => element.dataValues.externalReferenceId);
