@@ -1,4 +1,4 @@
-const statusCode = {
+const statusCodes = {
   Continue: '100',
   'Switching Protocol': '101',
   'Processing (WebDAV)': '102',
@@ -64,4 +64,4 @@ const statusCode = {
   'Network Authentication Required': '511'
 };
 
-module.exports = { statusCode };
+module.exports = { statusCodes };

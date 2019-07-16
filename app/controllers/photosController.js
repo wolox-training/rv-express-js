@@ -1,12 +1,15 @@
 /* eslint-disable new-cap */
 
 const { getAllPhotos, getPhotoById } = require('../services/photos');
+const { statusCode } = require('../helpers/response');
 
 const showAllPhotos = (req, res) => {
   getAllPhotos()
     .then(result => res.send(result.body))
     .catch(error =>
-      res.status(500).send({ error: `There were errors getting all the photos ${JSON.stringify(error)}` })
+      res
+        .status(statusCode['Internal Server Error'])
+        .send({ error: `There were errors getting all the photos ${JSON.stringify(error)}` })
     );
 };
 
@@ -15,7 +18,7 @@ const showPhotoById = (req, res) => {
     .then(result => res.send(result.body))
     .catch(error =>
       res
-        .status(500)
+        .status(statusCode['Internal Server Error'])
         .send({ error: `There were errors getting the photo ${req.params.id} ${JSON.stringify(error)}` })
     );
 };
