@@ -65,14 +65,13 @@ const buyAlbum = async (req, res) => {
     req.headers['x-access-token'];
 
   const user = await getUserByToken(token);
-
   const album = await getAlbumById(id);
 
-  const userId = user.id;
-  const externalReferenceId = album.body.id;
-  const purchase = { userId, externalReferenceId };
+  const purchase = { userId: user.id, externalReferenceId: album.body.id };
 
-  const previousPurchase = await obtainOnePurchase({ where: { userId, externalReferenceId } });
+  const previousPurchase = await obtainOnePurchase({
+    where: { userId: user.id, externalReferenceId: album.body.id }
+  });
 
   if (previousPurchase) {
     logger.info('The album was already purchased.');
