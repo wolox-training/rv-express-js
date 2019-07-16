@@ -23,7 +23,7 @@ describe('Admin user endpoint test', () => {
     expect(response.text).toBe(
       `The user ${user.firstName} ${user.lastName} was successfully updated as admin`
     );
-    expect(response.statusCode).toBe(statusCodes.OK);
+    expect(response.statusCode).toBe(statusCodes.ok);
   });
 
   it('should return the user was created as admin', async () => {
@@ -47,7 +47,7 @@ describe('Admin user endpoint test', () => {
     expect(response.text).toBe(
       `The user ${user.firstName} ${user.lastName} was successfully created as admin`
     );
-    expect(response.statusCode).toBe(statusCodes.OK);
+    expect(response.statusCode).toBe(statusCodes.ok);
   });
 
   it('should return the token was not given', async () => {
@@ -59,7 +59,7 @@ describe('Admin user endpoint test', () => {
       .query()
       .send(user);
     expect(response.text).toBe('The token was not given');
-    expect(response.statusCode).toBe(statusCodes.Unauthorized);
+    expect(response.statusCode).toBe(statusCodes.unauthorized);
   });
 
   it('should return the token given was a user token', async () => {
@@ -76,6 +76,6 @@ describe('Admin user endpoint test', () => {
       .query(query)
       .send(user);
     expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} is not authenticated as Admin`);
-    expect(response.statusCode).toBe(statusCodes.Unauthorized);
+    expect(response.statusCode).toBe(statusCodes.unauthorized);
   });
 });

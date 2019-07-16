@@ -25,7 +25,7 @@ describe('Sign In endpoint test', () => {
     const response = await request(app)
       .post('/users/sessions')
       .send(userCredentials);
-    expect(response.statusCode).toBe(statusCodes['Bad Request']);
+    expect(response.statusCode).toBe(statusCodes.bad_request);
     expect(response.text).toBe('No input email!');
   });
 
@@ -45,7 +45,7 @@ describe('Sign In endpoint test', () => {
     const response = await request(app)
       .post('/users/sessions')
       .send(userCredentials);
-    expect(response.statusCode).toBe(statusCodes['Bad Request']);
+    expect(response.statusCode).toBe(statusCodes.bad_request);
     expect(response.text).toBe('No input password!');
   });
 
@@ -64,7 +64,7 @@ describe('Sign In endpoint test', () => {
     const response = await request(app)
       .post('/users/sessions')
       .send(userCredentials);
-    expect(response.statusCode).toBe(statusCodes['Bad Request']);
+    expect(response.statusCode).toBe(statusCodes.bad_request);
     expect(response.text).toBe(`The email: ${userCredentials.email} is not a valid WOLOX email.`);
   });
 
@@ -83,7 +83,7 @@ describe('Sign In endpoint test', () => {
       .post('/users/sessions')
       .send(userCredentials);
     expect(response.text).toBe(`The email: ${userCredentials.email} is not registered.`);
-    expect(response.statusCode).toBe(statusCodes['Not Found']);
+    expect(response.statusCode).toBe(statusCodes.not_found);
   });
 
   it('should return the password was wrong', async () => {
@@ -107,7 +107,7 @@ describe('Sign In endpoint test', () => {
     expect(response.text).toBe(
       `The password for the user with the email: ${userCredentials.email} was wrong.`
     );
-    expect(response.statusCode).toBe(statusCodes.Unauthorized);
+    expect(response.statusCode).toBe(statusCodes.unauthorized);
   });
 
   it('should return the token', async () => {
@@ -129,6 +129,6 @@ describe('Sign In endpoint test', () => {
       .send(userCredentials);
     expect(JSON.parse(response.text).auth).toBe(true);
     expect(verifyToken(JSON.parse(response.text).token).email).toBe(user.email);
-    expect(response.statusCode).toBe(statusCodes.OK);
+    expect(response.statusCode).toBe(statusCodes.ok);
   });
 });

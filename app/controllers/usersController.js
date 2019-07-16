@@ -26,7 +26,7 @@ const addUser = (req, res) => {
       logger.error(
         `There were errors when adding the user ${user.firstName} ${user.lastName}: ${JSON.stringify(error)}`
       );
-      res.status(statusCodes['Internal Server Error']).send({
+      res.status(statusCodes.internal_server_error).send({
         error: `There were errors when adding the user ${user.firstName} ${user.lastName}: ${JSON.stringify(
           error
         )}`
@@ -40,7 +40,7 @@ const signIn = (req, res) => {
   const token = signToken(email);
 
   logger.info('Password OK, token sended.');
-  return res.status(statusCodes.OK).send({ auth: true, token });
+  return res.status(statusCodes.ok).send({ auth: true, token });
 };
 
 const listUsers = async (req, res) => {
@@ -48,13 +48,13 @@ const listUsers = async (req, res) => {
 
   const userList = await obtainAllUsers();
 
-  if (!page || !limit) return res.status(statusCodes.OK).send(userList[0]);
+  if (!page || !limit) return res.status(statusCodes.ok).send(userList[0]);
 
   if (isNaN(page) || isNaN(limit) || page < 0 || limit <= 0)
-    return res.status(statusCodes['Bad Request']).send('Invalid query value');
+    return res.status(statusCodes.bad_request).send('Invalid query value');
 
   logger.info(userList.slice(limit * page, limit * (parseInt(page) + 1)));
-  return res.status(statusCodes.OK).send(userList.slice(limit * page, limit * (parseInt(page) + 1)));
+  return res.status(statusCodes.ok).send(userList.slice(limit * page, limit * (parseInt(page) + 1)));
 };
 
 const addAdminUser = (req, res) => {
@@ -82,7 +82,7 @@ const addAdminUser = (req, res) => {
       logger.error(
         `There were errors when adding the user ${user.firstName} ${user.lastName}: ${JSON.stringify(error)}`
       );
-      res.status(statusCodes['Internal Server Error']).send({
+      res.status(statusCodes.internal_server_error).send({
         error: `There were errors when adding the user ${user.firstName} ${user.lastName}: ${JSON.stringify(
           error
         )}`
