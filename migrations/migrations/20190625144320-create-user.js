@@ -28,6 +28,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      privilegeLevel: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        field: 'privilege_level'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
