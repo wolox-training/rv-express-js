@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-parens */
 /* eslint-disable new-cap */
 const logger = require('../logger/index');
-const { getUserFromToken } = require('../helpers/user');
+const { getUserByToken } = require('../helpers/user');
 
 const {
   getAllAlbums,
@@ -64,7 +64,7 @@ const buyAlbum = async (req, res) => {
     (req.query && req.query.access_token) ||
     req.headers['x-access-token'];
 
-  const user = await getUserFromToken(token);
+  const user = await getUserByToken(token);
 
   const album = await getAlbumById(id);
 
@@ -107,7 +107,7 @@ const listAlbumsFromUser = async (req, res) => {
     (req.query && req.query.access_token) ||
     req.headers['x-access-token'];
 
-  const user = await getUserFromToken(token);
+  const user = await getUserByToken(token);
 
   if (user.privilegeLevel === 'normal' && user.id !== parseInt(user_id)) {
     logger.info("This user cannot access these User's albums.");
@@ -138,7 +138,7 @@ const listPhotosFromAlbum = async (req, res) => {
     (req.query && req.query.access_token) ||
     req.headers['x-access-token'];
 
-  const user = await getUserFromToken(token);
+  const user = await getUserByToken(token);
 
   const purchases = await obtainAllPurchases({ where: { userId: user.id } });
   const idsOfAlbums = purchases.map(element => element.dataValues.externalReferenceId);
