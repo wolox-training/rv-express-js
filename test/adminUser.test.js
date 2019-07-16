@@ -2,6 +2,7 @@ const app = require('../app');
 const request = require('supertest');
 const factory = require('./factories/users');
 const { signToken } = require('../app/helpers/token');
+const { statusCodes } = require('../app/helpers/response');
 
 describe('Admin user endpoint test', () => {
   afterEach(() => factory.cleanUp());
@@ -22,7 +23,7 @@ describe('Admin user endpoint test', () => {
     expect(response.text).toBe(
       `The user ${user.firstName} ${user.lastName} was successfully updated as admin`
     );
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(statusCodes.OK);
   });
 
   it('should return the user was created as admin', async () => {
@@ -46,7 +47,7 @@ describe('Admin user endpoint test', () => {
     expect(response.text).toBe(
       `The user ${user.firstName} ${user.lastName} was successfully created as admin`
     );
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(statusCodes.OK);
   });
 
   it('should return the token was not given', async () => {
@@ -58,7 +59,7 @@ describe('Admin user endpoint test', () => {
       .query()
       .send(user);
     expect(response.text).toBe('The token was not given');
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(statusCodes.Unauthorized);
   });
 
   it('should return the token given was a user token', async () => {
@@ -75,6 +76,6 @@ describe('Admin user endpoint test', () => {
       .query(query)
       .send(user);
     expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} is not authenticated as Admin`);
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(statusCodes.Unauthorized);
   });
 });
