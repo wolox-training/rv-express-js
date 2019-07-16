@@ -6,6 +6,7 @@ const { signToken } = require('../app/helpers/token');
 const faker = require('faker');
 const nock = require('nock');
 const { getAlbumById, obtainAllPurchases } = require('../app/services/albums');
+const { statusCodes } = require('../app/helpers/response');
 
 describe('List albums from a user test', () => {
   beforeEach(() => {
@@ -14,16 +15,15 @@ describe('List albums from a user test', () => {
   });
 
   it('should return the albums from another user being admin', async () => {
-    nock('http://localhost:8081')
-      .get('/albums')
-      .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
-        'Content-Type': 'application/json'
-      });
+    const albumToBuy = 48;
 
-    const albumToBuy = () =>
-      faker.random.number({
-        min: 1,
-        max: 100
+    nock('https://jsonplaceholder.typicode.com')
+      .persist()
+      .get('/albums/48')
+      .reply(statusCodes.ok, {
+        userId: 5,
+        id: 48,
+        title: 'modi consequatur culpa aut quam soluta alias perspiciatis laudantium'
       });
 
     const normalUserObject = await factory.create({});
@@ -32,8 +32,8 @@ describe('List albums from a user test', () => {
     const adminUser = adminUserObject.dataValues;
 
     for (let i = 0; i < 3; i++) {
-      await albumsCreate({ userId: normalUser.id, externalReferenceId: albumToBuy() });
-      await albumsCreate({ userId: adminUser.id, externalReferenceId: albumToBuy() });
+      await albumsCreate({ userId: normalUser.id, externalReferenceId: albumToBuy });
+      await albumsCreate({ userId: adminUser.id, externalReferenceId: albumToBuy });
     }
 
     const query = {
@@ -53,7 +53,8 @@ describe('List albums from a user test', () => {
   });
 
   it('should return the albums from another user being admin', async () => {
-    nock('http://localhost:8081')
+    nock('https://jsonplaceholder.typicode.com')
+      .persist()
       .get('/albums')
       .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
         'Content-Type': 'application/json'
@@ -87,23 +88,22 @@ describe('List albums from a user test', () => {
   });
 
   it('should return the albums of the user', async () => {
-    nock('http://localhost:8081')
-      .get('/albums')
-      .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
-        'Content-Type': 'application/json'
-      });
+    const albumToBuy = 48;
 
-    const albumToBuy = () =>
-      faker.random.number({
-        min: 1,
-        max: 100
+    nock('https://jsonplaceholder.typicode.com')
+      .persist()
+      .get('/albums/48')
+      .reply(statusCodes.ok, {
+        userId: 5,
+        id: 48,
+        title: 'modi consequatur culpa aut quam soluta alias perspiciatis laudantium'
       });
 
     const normalUserObject = await factory.create({});
     const normalUser = normalUserObject.dataValues;
 
     for (let i = 0; i < 3; i++) {
-      await albumsCreate({ userId: normalUser.id, externalReferenceId: albumToBuy() });
+      await albumsCreate({ userId: normalUser.id, externalReferenceId: albumToBuy });
     }
 
     const purchases = await obtainAllPurchases({ where: { userId: normalUser.id } });

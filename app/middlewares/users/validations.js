@@ -6,18 +6,19 @@ const { obtainOneUser } = require('../../services/users');
 const { verifyToken } = require('../../helpers/token');
 
 const { checkPassword } = require('../../helpers/encryption');
+const { statusCodes } = require('../../helpers/response');
 
 const isUserDataPresent = (req, res, next) => {
   const user = req.body;
 
   if (!user.firstName) {
     logger.info('No input first name!');
-    return res.status(400).send('No input first name!');
+    return res.status(statusCodes.bad_request).send('No input first name!');
   }
 
   if (!user.lastName) {
     logger.info('No input last name!');
-    return res.status(400).send('No input last name!');
+    return res.status(statusCodes.bad_request).send('No input last name!');
   }
   return next();
 };
@@ -27,12 +28,12 @@ const areCredentialsPresent = (req, res, next) => {
 
   if (!user.email) {
     logger.info('No input email!');
-    return res.status(400).send('No input email!');
+    return res.status(statusCodes.bad_request).send('No input email!');
   }
 
   if (!user.password) {
     logger.info('No input password!');
-    return res.status(400).send('No input password!');
+    return res.status(statusCodes.bad_request).send('No input password!');
   }
   return next();
 };
@@ -43,7 +44,7 @@ const isEmailValid = (req, res, next) => {
 
   if (validationErrors.length) {
     logger.error(`${user.email} is not a valid WOLOX email: ${validationErrors}`);
-    return res.status(400).send({
+    return res.status(statusCodes.bad_request).send({
       error: `${user.email} is not a valid WOLOX email: ${validationErrors}`
     });
   }
@@ -58,7 +59,7 @@ const areCredentialsValid = (req, res, next) => {
     logger.error(
       `The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: ${validationErrors}`
     );
-    return res.status(500).send({
+    return res.status(statusCodes.bad_request).send({
       error: `The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: ${validationErrors}`
     });
   }
@@ -72,12 +73,14 @@ const isLoginValid = async (req, res, next) => {
 
   if (!user) {
     logger.info(`The email: ${email} is not registered.`);
-    return res.status(500).send(`The email: ${email} is not registered.`);
+    return res.status(statusCodes.unauthorized).send(`The email: ${email} is not registered.`);
   }
 
   if (!checkPassword(password, user.password)) {
     logger.info(`The password for the user with the email: ${email} was wrong.`);
-    return res.status(400).send(`The password for the user with the email: ${email} was wrong.`);
+    return res
+      .status(statusCodes.unauthorized)
+      .send(`The password for the user with the email: ${email} was wrong.`);
   }
 
   return next();
@@ -91,14 +94,14 @@ const isAuthenticated = async (req, res, next) => {
 
   if (!token) {
     logger.info('The token was not given');
-    return res.status(400).send('The token was not given');
+    return res.status(statusCodes.unauthorized).send('The token was not given');
   }
 
   const user = await obtainOneUser({ where: { email: verifyToken(token).email } });
 
   if (!user) {
     logger.info('The user is not authenticated');
-    return res.status(500).send('The user is not authenticated');
+    return res.status(statusCodes.unauthorized).send('The user is not authenticated');
   }
 
   logger.info('The user is authenticated');
@@ -115,7 +118,9 @@ const isAuthenticatedAsAdmin = async (req, res, next) => {
 
   if (user.privilegeLevel !== 'admin') {
     logger.info(`The user ${user.firstName} ${user.lastName} is not authenticated as Admin`);
-    return res.status(500).send(`The user ${user.firstName} ${user.lastName} is not authenticated as Admin`);
+    return res
+      .status(statusCodes.unauthorized)
+      .send(`The user ${user.firstName} ${user.lastName} is not authenticated as Admin`);
   }
 
   logger.info(`The user ${user.firstName} ${user.lastName} is authenticated as Admin`);

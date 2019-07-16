@@ -3,33 +3,50 @@ const request = require('supertest');
 const factory = require('./factories/users');
 const { albumsCleanUp, albumsCreate } = require('./factories/albums');
 const { signToken } = require('../app/helpers/token');
-const faker = require('faker');
 const nock = require('nock');
 const { getPhotosFromAlbum, obtainAllPurchases } = require('../app/services/albums');
+const { statusCodes } = require('../app/helpers/response');
 
-describe('List albums from a user test', () => {
+describe('List photos from an album user test', () => {
   beforeEach(() => {
     factory.cleanUp();
     albumsCleanUp();
   });
 
   it('should return the photos from a purchased album', async () => {
-    nock('http://localhost:8081')
-      .get('/albums')
-      .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
-        'Content-Type': 'application/json'
-      });
+    const albumToBuy = 48;
 
-    const albumToBuy = () =>
-      faker.random.number({
-        min: 1,
-        max: 100
-      });
+    nock('https://jsonplaceholder.typicode.com')
+      .persist()
+      .get('/photos?albumId=48')
+      .reply(statusCodes.ok, [
+        {
+          albumId: 48,
+          id: 2351,
+          title: 'et asperiores reprehenderit voluptas quisquam aut est',
+          url: 'https://via.placeholder.com/600/d29d30',
+          thumbnailUrl: 'https://via.placeholder.com/150/d29d30'
+        },
+        {
+          albumId: 48,
+          id: 2352,
+          title: 'aspernatur repellendus ex aliquid velit et molestiae mollitia minima',
+          url: 'https://via.placeholder.com/600/232cb9',
+          thumbnailUrl: 'https://via.placeholder.com/150/232cb9'
+        },
+        {
+          albumId: 48,
+          id: 2353,
+          title: 'officia beatae minima ut',
+          url: 'https://via.placeholder.com/600/ab5be6',
+          thumbnailUrl: 'https://via.placeholder.com/150/ab5be6'
+        }
+      ]);
 
     const userObject = await factory.create({});
     const user = userObject.dataValues;
 
-    await albumsCreate({ userId: user.id, externalReferenceId: albumToBuy() });
+    await albumsCreate({ userId: user.id, externalReferenceId: albumToBuy });
 
     const query = {
       access_token: signToken(user.email)
@@ -49,18 +66,6 @@ describe('List albums from a user test', () => {
   });
 
   it('should return the photos from a non purchased album', async () => {
-    nock('http://localhost:8081')
-      .get('/albums')
-      .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
-        'Content-Type': 'application/json'
-      });
-
-    const albumToBuy = () =>
-      faker.random.number({
-        min: 1,
-        max: 100
-      });
-
     const userObject = await factory.create({});
     const user = userObject.dataValues;
 
@@ -68,7 +73,7 @@ describe('List albums from a user test', () => {
       access_token: signToken(user.email)
     };
 
-    const albumToRetrieve = albumToBuy();
+    const albumToRetrieve = 57;
 
     const response = await request(app)
       .get(`/users/albums/${albumToRetrieve}/photos`)

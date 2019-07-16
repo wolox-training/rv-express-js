@@ -4,6 +4,7 @@ const request = require('supertest');
 const factory = require('./factories/users');
 const { verifyToken } = require('../app/helpers/token');
 const { encryptPassword } = require('../app/helpers/encryption');
+const { statusCodes } = require('../app/helpers/response');
 
 describe('Sign In endpoint test', () => {
   beforeEach(() => factory.cleanUp());
@@ -26,7 +27,7 @@ describe('Sign In endpoint test', () => {
       .post('/users/sessions')
       .send(userCredentials);
     expect(response.text).toBe('No input email!');
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(statusCodes.bad_request);
   });
 
   it('should return no input password', async () => {
@@ -46,7 +47,7 @@ describe('Sign In endpoint test', () => {
       .post('/users/sessions')
       .send(userCredentials);
     expect(response.text).toBe('No input password!');
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(statusCodes.bad_request);
   });
 
   it('should return not a valid WOLOX email', async () => {
@@ -65,7 +66,7 @@ describe('Sign In endpoint test', () => {
       .post('/users/sessions')
       .send(userCredentials);
     expect(response.text).toBe(`{\"error\":\"${user.email} is not a valid WOLOX email: Email not valid!\"}`);
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(statusCodes.bad_request);
   });
 
   it('should return email not registered', async () => {
@@ -83,7 +84,7 @@ describe('Sign In endpoint test', () => {
       .post('/users/sessions')
       .send(userCredentials);
     expect(response.text).toBe(`The email: ${userCredentials.email} is not registered.`);
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(statusCodes.unauthorized);
   });
 
   it('should return the password was wrong', async () => {
@@ -107,7 +108,7 @@ describe('Sign In endpoint test', () => {
     expect(response.text).toBe(
       `The password for the user with the email: ${userCredentials.email} was wrong.`
     );
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(statusCodes.unauthorized);
   });
 
   it('should return the token', async () => {
@@ -129,6 +130,6 @@ describe('Sign In endpoint test', () => {
       .send(userCredentials);
     expect(JSON.parse(response.text).auth).toBe(true);
     expect(verifyToken(JSON.parse(response.text).token).email).toBe(user.email);
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(statusCodes.ok);
   });
 });

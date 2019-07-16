@@ -3,9 +3,8 @@ const request = require('supertest');
 const factory = require('./factories/users');
 const { albumsCleanUp, albumsCreate } = require('./factories/albums');
 const { signToken } = require('../app/helpers/token');
-const { getAlbumById } = require('../app/services/albums');
-const faker = require('faker');
 const nock = require('nock');
+const { statusCodes } = require('../app/helpers/response');
 
 describe('Buy album test', () => {
   beforeEach(() => {
@@ -14,16 +13,7 @@ describe('Buy album test', () => {
   });
 
   it('should return album already purchased', async () => {
-    nock('http://localhost:8081')
-      .get('/albums')
-      .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
-        'Content-Type': 'application/json'
-      });
-
-    const albumToBuy = faker.random.number({
-      min: 1,
-      max: 100
-    });
+    const albumToBuy = 88;
 
     const newUser = await factory.create({});
     const user = newUser.dataValues;
@@ -40,20 +30,21 @@ describe('Buy album test', () => {
       .post(`/albums/${albumToBuy}`)
       .query(query);
     expect(response.text).toBe('The album was already purchased.');
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(statusCodes.internal_server_error);
   });
 
   it('should return album successfully purchased', async () => {
-    nock('http://localhost:8081')
-      .get('/albums')
-      .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
-        'Content-Type': 'application/json'
-      });
+    const albumToBuy = 76;
+    const albumName = 'dolorem magnam facere itaque ut reprehenderit tenetur corrupti';
 
-    const albumToBuy = faker.random.number({
-      min: 1,
-      max: 100
-    });
+    nock('https://jsonplaceholder.typicode.com')
+      .persist()
+      .get('/albums/76')
+      .reply(statusCodes.ok, {
+        userId: 8,
+        id: albumToBuy,
+        title: albumName
+      });
 
     const newUser = await factory.create({});
     const user = newUser.dataValues;
@@ -63,30 +54,17 @@ describe('Buy album test', () => {
     const query = {
       access_token: token
     };
-
-    const album = await getAlbumById(albumToBuy);
-    const albumName = album.body.title;
-
     const response = await request(app)
       .post(`/albums/${albumToBuy}`)
       .query(query);
     expect(response.text).toBe(
       `The user ${user.firstName} ${user.lastName} successfully purchased the album "${albumName}", id: ${albumToBuy}`
     );
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(statusCodes.ok);
   });
 
   it('should return token not given', async () => {
-    nock('http://localhost:8081')
-      .get('/albums')
-      .replyWithFile(200, `${__dirname}/fixtures/albums/getAlbumsResponse.json`, {
-        'Content-Type': 'application/json'
-      });
-
-    const albumToBuy = faker.random.number({
-      min: 1,
-      max: 100
-    });
+    const albumToBuy = 14;
 
     await factory.create({});
 
@@ -98,6 +76,6 @@ describe('Buy album test', () => {
       .post(`/albums/${albumToBuy}`)
       .query(query);
     expect(response.text).toBe('The token was not given');
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(statusCodes.unauthorized);
   });
 });
