@@ -44,9 +44,7 @@ describe('List albums from a user test', () => {
     const response = await request(app)
       .get(`/users/albums/${idsOfAlbums[0]}/photos`)
       .query(query);
-    expect(response.text).toBe(
-      `The user with the id: ${user.id} has the following photos: ${linksToPhotosFromAlbum}`
-    );
+    expect(response.text).toBe(`${linksToPhotosFromAlbum}`);
     expect(response.statusCode).toBe(200);
   });
 

@@ -123,10 +123,8 @@ const listAlbumsFromUser = async (req, res) => {
     return res.status(400).send('The albums could not be obtained');
   }
 
-  logger.info(`The user with the id: ${user_id} has the following albums: ${titlesFromAlbumsFromUser}`);
-  return res
-    .status(200)
-    .send(`The user with the id: ${user_id} has the following albums: ${titlesFromAlbumsFromUser}`);
+  logger.info(`${titlesFromAlbumsFromUser}`);
+  return res.status(200).send(`${titlesFromAlbumsFromUser}`);
 };
 
 const listPhotosFromAlbum = async (req, res) => {
@@ -156,10 +154,8 @@ const listPhotosFromAlbum = async (req, res) => {
 
   const linksToPhotosFromAlbum = photosFromAlbumObject.body.map(photoObject => photoObject.url);
 
-  logger.info(`The user with the id: ${user.id} has the following photos: ${linksToPhotosFromAlbum}`);
-  return res
-    .status(200)
-    .send(`The user with the id: ${user.id} has the following photos: ${linksToPhotosFromAlbum}`);
+  logger.info(`${linksToPhotosFromAlbum}`);
+  return res.status(200).send(`${linksToPhotosFromAlbum}`);
 };
 
 module.exports = {
