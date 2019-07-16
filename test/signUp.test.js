@@ -5,6 +5,7 @@ const request = require('supertest');
 const { obtainAllUsers } = require('../app/services/users');
 const { factory } = require('factory-girl');
 const faker = require('faker');
+const { statusCodes } = require('../app/helpers/response');
 
 describe('Sign Up endpoint test', () => {
   function User() {
@@ -22,7 +23,7 @@ describe('Sign Up endpoint test', () => {
       .post('/users')
       .send(user);
     expect(response.text).toBe(`The user ${user.firstName} ${user.lastName} was successfully created.`);
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(statusCodes.ok);
 
     const userResult = await obtainAllUsers({ where: { email: user.email } });
     expect(userResult[0].email).toBe(user.email);
@@ -39,7 +40,7 @@ describe('Sign Up endpoint test', () => {
     expect(response.text).toBe(
       `{\"error\":\"The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: Password too short!\"}`
     );
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(statusCodes.bad_request);
   });
 
   it('should return password not alphanumeric', async () => {
@@ -52,7 +53,7 @@ describe('Sign Up endpoint test', () => {
     expect(response.text).toBe(
       `{\"error\":\"The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: Password is not alphanumeric!\"}`
     );
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(statusCodes.bad_request);
   });
 
   it('should return email not valid', async () => {
@@ -65,6 +66,6 @@ describe('Sign Up endpoint test', () => {
     expect(response.text).toBe(
       `{\"error\":\"The input user data: ${user.firstName} ${user.lastName} ${user.email} is not valid: Email not valid!\"}`
     );
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(statusCodes.bad_request);
   });
 });

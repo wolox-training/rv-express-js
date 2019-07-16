@@ -4,6 +4,7 @@ const factory = require('./factories/users');
 const { albumsCleanUp, albumsCreate } = require('./factories/albums');
 const { signToken } = require('../app/helpers/token');
 const nock = require('nock');
+const { statusCodes } = require('../app/helpers/response');
 
 describe('Buy album test', () => {
   beforeEach(() => {
@@ -29,7 +30,7 @@ describe('Buy album test', () => {
       .post(`/albums/${albumToBuy}`)
       .query(query);
     expect(response.text).toBe('The album was already purchased.');
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(statusCodes.internal_server_error);
   });
 
   it('should return album successfully purchased', async () => {
@@ -39,7 +40,7 @@ describe('Buy album test', () => {
     nock('https://jsonplaceholder.typicode.com')
       .persist()
       .get('/albums/76')
-      .reply(200, {
+      .reply(statusCodes.ok, {
         userId: 8,
         id: albumToBuy,
         title: albumName
@@ -59,7 +60,7 @@ describe('Buy album test', () => {
     expect(response.text).toBe(
       `The user ${user.firstName} ${user.lastName} successfully purchased the album "${albumName}", id: ${albumToBuy}`
     );
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(statusCodes.ok);
   });
 
   it('should return token not given', async () => {
@@ -75,6 +76,6 @@ describe('Buy album test', () => {
       .post(`/albums/${albumToBuy}`)
       .query(query);
     expect(response.text).toBe('The token was not given');
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(statusCodes.unauthorized);
   });
 });
