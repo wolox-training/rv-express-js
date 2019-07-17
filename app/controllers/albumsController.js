@@ -1,8 +1,7 @@
 /* eslint-disable no-extra-parens */
 /* eslint-disable new-cap */
 const logger = require('../logger/index');
-const { obtainOneUser } = require('../services/users');
-const { verifyToken } = require('../helpers/token');
+const { getUserByToken } = require('../helpers/user');
 
 const {
   getAllAlbums,
@@ -10,7 +9,8 @@ const {
   getPhotosFromAlbum,
   getPhotoFromAlbumByIds,
   registerPurchase,
-  obtainOnePurchase
+  obtainOnePurchase,
+  obtainAllPurchases
 } = require('../services/albums');
 const { statusCodes } = require('../helpers/response');
 
@@ -67,16 +67,14 @@ const buyAlbum = async (req, res) => {
     (req.query && req.query.access_token) ||
     req.headers['x-access-token'];
 
-  const newUser = await obtainOneUser({ where: { email: verifyToken(token).email } });
-  const user = newUser.dataValues;
-
+  const user = await getUserByToken(token);
   const album = await getAlbumById(id);
 
-  const userId = user.id;
-  const externalReferenceId = album.body.id;
-  const purchase = { userId, externalReferenceId };
+  const purchase = { userId: user.id, externalReferenceId: album.body.id };
 
-  const previousPurchase = await obtainOnePurchase({ where: { userId, externalReferenceId } });
+  const previousPurchase = await obtainOnePurchase({
+    where: { userId: user.id, externalReferenceId: album.body.id }
+  });
 
   if (previousPurchase) {
     logger.info('The album was already purchased.');
@@ -103,4 +101,72 @@ const buyAlbum = async (req, res) => {
     });
 };
 
-module.exports = { showAllAlbums, showAlbumById, showPhotosFromAlbum, showPhotoFromAlbumByIds, buyAlbum };
+const listAlbumsFromUser = async (req, res) => {
+  const { user_id } = req.params;
+
+  const token =
+    (req.body && req.body.access_token) ||
+    (req.query && req.query.access_token) ||
+    req.headers['x-access-token'];
+
+  const user = await getUserByToken(token);
+
+  if (user.privilegeLevel === 'normal' && user.id !== parseInt(user_id)) {
+    logger.info("This user cannot access these User's albums.");
+    return res.status(400).send("This user cannot access these User's albums.");
+  }
+
+  const purchases = await obtainAllPurchases({ where: { userId: user_id } });
+  const idsOfAlbums = purchases.map(element => element.dataValues.externalReferenceId);
+  const albumsFromUser = await Promise.all(idsOfAlbums.map(result => getAlbumById(result)));
+  const titlesFromAlbumsFromUser = albumsFromUser.map(result => result.body.title);
+
+  if (!purchases) {
+    logger.info('The albums could not be obtained');
+    return res.status(400).send('The albums could not be obtained');
+  }
+
+  logger.info(`${titlesFromAlbumsFromUser}`);
+  return res.status(200).send(JSON.stringify(titlesFromAlbumsFromUser));
+};
+
+const listPhotosFromAlbum = async (req, res) => {
+  const { album_id } = req.params;
+
+  const token =
+    (req.body && req.body.access_token) ||
+    (req.query && req.query.access_token) ||
+    req.headers['x-access-token'];
+
+  const user = await getUserByToken(token);
+
+  const purchases = await obtainAllPurchases({ where: { userId: user.id } });
+  const idsOfAlbums = purchases.map(element => element.dataValues.externalReferenceId);
+
+  if (!idsOfAlbums.includes(parseInt(album_id))) {
+    logger.info(`The user with the id: ${user.id} has not bought the album ${album_id}.`);
+    return res.status(400).send(`The user with the id: ${user.id} has not bought the album ${album_id}.`);
+  }
+
+  const photosFromAlbumObject = await getPhotosFromAlbum(album_id);
+
+  if (!photosFromAlbumObject) {
+    logger.info('The photos could not be obtained');
+    return res.status(400).send('The photos could not be obtained');
+  }
+
+  const linksToPhotosFromAlbum = photosFromAlbumObject.body.map(photoObject => photoObject.url);
+
+  logger.info(`${linksToPhotosFromAlbum}`);
+  return res.status(200).send(linksToPhotosFromAlbum);
+};
+
+module.exports = {
+  showAllAlbums,
+  showAlbumById,
+  showPhotosFromAlbum,
+  showPhotoFromAlbumByIds,
+  buyAlbum,
+  listAlbumsFromUser,
+  listPhotosFromAlbum
+};
