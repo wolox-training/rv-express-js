@@ -36,21 +36,13 @@ describe('Token exipire test', () => {
       access_token: token
     };
 
-    function wait(ms) {
-      const start = new Date().getTime();
-      let end = start;
-      while (end < start + ms) {
-        end = new Date().getTime();
-      }
-    }
-
-    wait((JWT_EXPIRATION_TIME + 0.5) * 100);
-
-    const response = await request(app)
-      .get('/users')
-      .query({ page: 0, limit: 5 })
-      .send(body);
-    expect(response.text).toBe('There was an error');
-    expect(response.statusCode).toBe(statusCodes.unauthorized);
+    setTimeout(async () => {
+      const response = await request(app)
+        .get('/users')
+        .query({ page: 0, limit: 5 })
+        .send(body);
+      expect(response.text).toBe('There was an error');
+      expect(response.statusCode).toBe(statusCodes.unauthorized);
+    }, (JWT_EXPIRATION_TIME + 0.5) * 100);
   });
 });

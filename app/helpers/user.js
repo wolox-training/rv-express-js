@@ -1,15 +1,13 @@
 const { obtainOneUser } = require('../services/users');
 const { verifyToken } = require('../helpers/token');
 
+// eslint-disable-next-line require-await
 const getUserObjectByToken = async token => {
   const decodedToken = verifyToken(token);
+  // eslint-disable-next-line curly
+  if (decodedToken === 'error') return decodedToken;
 
-  if (decodedToken === 'error') {
-    return decodedToken;
-  }
-
-  const userObject = await obtainOneUser({ where: { email: decodedToken.email } });
-  return userObject;
+  return obtainOneUser({ where: { email: decodedToken.email } });
 };
 
 const getUserByToken = async token => {
