@@ -3,7 +3,7 @@ const request = require('supertest');
 const factory = require('./factories/users');
 const { signToken } = require('../app/helpers/token');
 const { statusCodes } = require('../app/helpers/response');
-const { EXPIRATION_TIME } = process.env;
+const { JWT_EXPIRATION_TIME } = require('../config/environment');
 
 describe('Token exipire test', () => {
   afterEach(() => factory.cleanUp());
@@ -44,7 +44,7 @@ describe('Token exipire test', () => {
       }
     }
 
-    wait((EXPIRATION_TIME + 0.5) * 100);
+    wait((JWT_EXPIRATION_TIME + 0.5) * 100);
 
     const response = await request(app)
       .get('/users')
