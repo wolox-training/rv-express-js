@@ -98,15 +98,14 @@ const isAuthenticated = async (req, res, next) => {
   }
 
   const user = await getUserObjectByToken(token, res);
-
-  if (user === 'error') {
-    logger.info('There was an error');
-    return res.status(statusCodes.unauthorized).send('There was an error');
-  }
-
   if (!user) {
     logger.info('The user is not authenticated');
     return res.status(statusCodes.unauthorized).send('The user is not authenticated');
+  }
+
+  if (user.errors) {
+    logger.info(user.errors);
+    return res.status(statusCodes.unauthorized).send(user.errors);
   }
 
   logger.info('The user is authenticated');
@@ -120,10 +119,14 @@ const isAuthenticatedAsAdmin = async (req, res, next) => {
     req.headers['x-access-token'];
 
   const user = await getUserObjectByToken(token);
+  if (!user) {
+    logger.info('The user is not authenticated');
+    return res.status(statusCodes.unauthorized).send('The user is not authenticated');
+  }
 
-  if (user === 'error') {
-    logger.info('There was an error');
-    return res.status(statusCodes.unauthorized).send('There was an error');
+  if (user.errors) {
+    logger.info(user.errors);
+    return res.status(statusCodes.unauthorized).send(user.errors);
   }
 
   if (user.privilegeLevel !== 'admin') {

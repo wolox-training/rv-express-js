@@ -5,7 +5,7 @@ const { signToken } = require('../app/helpers/token');
 const { statusCodes } = require('../app/helpers/response');
 const { JWT_EXPIRATION_TIME } = require('../config/environment');
 
-describe('Token exipire test', () => {
+describe('Token expire test', () => {
   afterEach(() => factory.cleanUp());
 
   it('should return success', async () => {
@@ -36,13 +36,20 @@ describe('Token exipire test', () => {
       access_token: token
     };
 
-    setTimeout(async () => {
-      const response = await request(app)
-        .get('/users')
-        .query({ page: 0, limit: 5 })
-        .send(body);
-      expect(response.text).toBe('There was an error');
-      expect(response.statusCode).toBe(statusCodes.unauthorized);
-    }, (JWT_EXPIRATION_TIME + 0.5) * 100);
+    function wait(ms) {
+      const start = new Date().getTime();
+      let end = start;
+      while (end < start + ms) {
+        end = new Date().getTime();
+      }
+    }
+    wait((JWT_EXPIRATION_TIME + 0.5) * 100);
+
+    const response = await request(app)
+      .get('/users')
+      .query({ page: 0, limit: 5 })
+      .send(body);
+    expect(response.text).toBe(JSON.stringify(['Unauthorized']));
+    expect(response.statusCode).toBe(statusCodes.unauthorized);
   });
 });

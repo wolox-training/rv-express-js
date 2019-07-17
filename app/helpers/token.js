@@ -10,7 +10,7 @@ const verifyToken = token => {
     return jwt.verify(token, secret);
   } catch (error) {
     logger.error(error);
-    return 'error';
+    return { errors: ['Unauthorized'] };
   }
 };
 

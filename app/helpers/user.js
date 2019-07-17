@@ -5,7 +5,7 @@ const { verifyToken } = require('../helpers/token');
 const getUserObjectByToken = async token => {
   const decodedToken = verifyToken(token);
   // eslint-disable-next-line curly
-  if (decodedToken === 'error') return decodedToken;
+  if (decodedToken.errors) return decodedToken;
 
   return obtainOneUser({ where: { email: decodedToken.email } });
 };
