@@ -48,7 +48,7 @@ describe('List albums from a user test', () => {
     const response = await request(app)
       .get(`/users/${normalUser.id}/albums`)
       .query(query);
-    expect(response.text).toBe(`${titlesFromAlbumsFromUser}`);
+    expect(response.text).toBe(JSON.stringify(titlesFromAlbumsFromUser));
     expect(response.statusCode).toBe(200);
   });
 
@@ -118,7 +118,7 @@ describe('List albums from a user test', () => {
     const response = await request(app)
       .get(`/users/${normalUser.id}/albums`)
       .query(query);
-    expect(response.text).toBe(`${titlesFromAlbumsFromUser}`);
+    expect(response.text).toBe(JSON.stringify(titlesFromAlbumsFromUser));
     expect(response.statusCode).toBe(200);
   });
 });

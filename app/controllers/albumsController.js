@@ -127,7 +127,7 @@ const listAlbumsFromUser = async (req, res) => {
   }
 
   logger.info(`${titlesFromAlbumsFromUser}`);
-  return res.status(200).send(`${titlesFromAlbumsFromUser}`);
+  return res.status(200).send(JSON.stringify(titlesFromAlbumsFromUser));
 };
 
 const listPhotosFromAlbum = async (req, res) => {
@@ -158,7 +158,7 @@ const listPhotosFromAlbum = async (req, res) => {
   const linksToPhotosFromAlbum = photosFromAlbumObject.body.map(photoObject => photoObject.url);
 
   logger.info(`${linksToPhotosFromAlbum}`);
-  return res.status(200).send(`${linksToPhotosFromAlbum}`);
+  return res.status(200).send(linksToPhotosFromAlbum);
 };
 
 module.exports = {
