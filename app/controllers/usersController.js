@@ -6,7 +6,7 @@ const { obtainAllUsers, upsertOneUser } = require('../services/users');
 const logger = require('../logger/index');
 const { signToken } = require('../helpers/token');
 const { statusCodes } = require('../helpers/response');
-const { sendMail } = require('../helpers/mailHelper');
+const { sendMail } = require('../helpers/mail');
 
 const addUser = (req, res) => {
   const { firstName, lastName, email } = req.body;

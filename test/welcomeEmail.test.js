@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 /* eslint-disable max-len */
 const faker = require('faker');
-const { sendMail } = require('../app/helpers/mailHelper');
+const { sendMail } = require('../app/helpers/mail');
 
 describe('welcome email test', () => {
   const email = `${faker.name.lastName()}@wolox.com.ar`;
