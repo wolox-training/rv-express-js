@@ -3,7 +3,7 @@ const { validateEmailPassword, validateEmail } = require('../../validators/users
 const logger = require('../../logger/index');
 
 const { obtainOneUser } = require('../../services/users');
-const { verifyToken } = require('../../helpers/token');
+const { getUserObjectByToken } = require('../../helpers/user');
 
 const { checkPassword } = require('../../helpers/encryption');
 const { statusCodes } = require('../../helpers/response');
@@ -97,11 +97,15 @@ const isAuthenticated = async (req, res, next) => {
     return res.status(statusCodes.unauthorized).send('The token was not given');
   }
 
-  const user = await obtainOneUser({ where: { email: verifyToken(token).email } });
-
+  const user = await getUserObjectByToken(token, res);
   if (!user) {
     logger.info('The user is not authenticated');
     return res.status(statusCodes.unauthorized).send('The user is not authenticated');
+  }
+
+  if (user.errors) {
+    logger.info(user.errors);
+    return res.status(statusCodes.unauthorized).send(user.errors);
   }
 
   logger.info('The user is authenticated');
@@ -114,7 +118,16 @@ const isAuthenticatedAsAdmin = async (req, res, next) => {
     (req.query && req.query.access_token) ||
     req.headers['x-access-token'];
 
-  const user = await obtainOneUser({ where: { email: verifyToken(token).email } });
+  const user = await getUserObjectByToken(token);
+  if (!user) {
+    logger.info('The user is not authenticated');
+    return res.status(statusCodes.unauthorized).send('The user is not authenticated');
+  }
+
+  if (user.errors) {
+    logger.info(user.errors);
+    return res.status(statusCodes.unauthorized).send(user.errors);
+  }
 
   if (user.privilegeLevel !== 'admin') {
     logger.info(`The user ${user.firstName} ${user.lastName} is not authenticated as Admin`);
