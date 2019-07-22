@@ -2,29 +2,38 @@
 const logger = require('../logger/index');
 const nodemailer = require('nodemailer');
 
-const sendMail = async useremail => {
-  const testAccount = await nodemailer.createTestAccount();
+const {
+  AUTH_USER,
+  AUTH_CLIENT_ID,
+  AUTH_CLIENT_SECRET,
+  AUTH_REFRESH_TOKEN,
+  AUTH_ACCESS_TOKEN
+} = require('../../config/environment');
 
+const sendMail = async useremail => {
   const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false,
+    service: 'gmail',
     auth: {
-      user: testAccount.user,
-      pass: testAccount.pass
+      type: 'OAuth2',
+      user: AUTH_USER,
+      clientId: AUTH_CLIENT_ID,
+      clientSecret: AUTH_CLIENT_SECRET,
+      refreshToken: AUTH_REFRESH_TOKEN,
+      accessToken: AUTH_ACCESS_TOKEN
     }
   });
 
-  const info = await transporter.sendMail({
-    from: '"new users 👻" <new_users@wolox.com.ar>',
+  const mailOptions = {
+    from: 'Admin from WoloxTraining <welcome_email@wolox.com.ar>',
     to: useremail,
     subject: 'Welcome!!',
-    text: 'Welcome to your new account!',
-    html: '<b>Welcome to your new account!</b>'
-  });
+    text: 'Welcome to your new account!'
+  };
 
-  logger.info(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
-  return `Message sent: ${info.messageId}`;
+  const result = await transporter.sendMail(mailOptions);
+
+  logger.info(result);
+  return `Message sent: <${result.accepted}@wolox.com.ar>`;
 };
 
 module.exports = { sendMail };
