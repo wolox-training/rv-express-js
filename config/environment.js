@@ -1,6 +1,5 @@
 const { ALBUMS_API_URL } = process.env || {};
 const { JWT_EXPIRATION_TIME } = process.env || {};
-
 const { AUTH_USER } = process.env || {};
 const { AUTH_CLIENT_ID } = process.env || {};
 const { AUTH_CLIENT_SECRET } = process.env || {};
