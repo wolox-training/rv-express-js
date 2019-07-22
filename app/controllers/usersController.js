@@ -6,6 +6,7 @@ const { obtainAllUsers, upsertOneUser } = require('../services/users');
 const logger = require('../logger/index');
 const { signToken } = require('../helpers/token');
 const { statusCodes } = require('../helpers/response');
+const { sendMail } = require('../helpers/mail');
 
 const addUser = (req, res) => {
   const { firstName, lastName, email } = req.body;
@@ -17,6 +18,7 @@ const addUser = (req, res) => {
 
   return registerUser(user)
     .then(result => {
+      sendMail(user.email).catch(logger.error);
       logger.info(
         `The user ${user.firstName} ${user.lastName} was successfully created ${JSON.stringify(result)}`
       );
